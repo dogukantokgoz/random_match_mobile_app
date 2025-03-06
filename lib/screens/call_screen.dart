@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'categories_screen.dart';
+import 'profile_screen.dart';
 
 class CallScreen extends StatefulWidget {
   const CallScreen({super.key});
@@ -12,23 +13,25 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
   int _selectedIndex = 1;
   String _selectedCategory = 'Genel';
   bool _isSearching = false;
-  bool _hasAnimatedText = false;
   late AnimationController _animationController1;
   late AnimationController _animationController2;
   late AnimationController _animationController3;
   late AnimationController _textAnimationController;
   late Animation<double> _textSlideAnimation;
   
-  final Map<String, MaterialColor> categoryColors = {
-    'Genel': Colors.blue,
-    'Müzik': Colors.purple,
-    'Spor': Colors.green,
-    'Oyun': Colors.deepOrange,
-    'Film': Colors.red,
-    'Seyahat': Colors.teal,
-    'Yemek': Colors.pink,
-    'Sanat': Colors.indigo,
+  final Map<String, dynamic> categoryData = {
+    'Genel': {'color': Colors.blue, 'icon': Icons.public},
+    'Müzik': {'color': Colors.purple, 'icon': Icons.music_note},
+    'Spor': {'color': Colors.green, 'icon': Icons.sports_soccer},
+    'Oyun': {'color': Colors.deepOrange, 'icon': Icons.sports_esports},
+    'Film': {'color': Colors.red, 'icon': Icons.movie},
+    'Seyahat': {'color': Colors.teal, 'icon': Icons.flight},
+    'Yemek': {'color': Colors.pink, 'icon': Icons.restaurant},
+    'Sanat': {'color': Colors.indigo, 'icon': Icons.palette},
   };
+
+  MaterialColor get currentCategoryColor => categoryData[_selectedCategory]['color'] as MaterialColor;
+  IconData get currentCategoryIcon => categoryData[_selectedCategory]['icon'] as IconData;
 
   @override
   void initState() {
@@ -92,6 +95,42 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
     setState(() {
       _selectedIndex = index;
     });
+    
+    if (index == 3) {
+      // Profile icon tapped
+      Navigator.push(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => ProfileScreen(
+            selectedMainCategory: _selectedCategory,
+            selectedColor: currentCategoryColor,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      ).then((_) {
+        setState(() {
+          _selectedIndex = 1;
+        });
+      });
+    }
   }
 
   void _toggleSearch() {
@@ -101,16 +140,12 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
         _startSearchAnimation();
       } else {
         _stopSearchAnimation();
-        _hasAnimatedText = false;
       }
     });
   }
 
   void _startSearchAnimation() {
-    if (!_hasAnimatedText) {
-      _textAnimationController.forward();
-      _hasAnimatedText = true;
-    }
+    _textAnimationController.forward();
     _animationController1.forward();
     Future.delayed(const Duration(milliseconds: 500), () {
       if (_isSearching) _animationController2.forward();
@@ -156,20 +191,60 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
     return GestureDetector(
       onTap: onTap,
       child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-        constraints: const BoxConstraints(minWidth: 130),
+        height: 40,
+        padding: const EdgeInsets.symmetric(horizontal: 12),
+        constraints: const BoxConstraints(
+          minWidth: 150,
+          maxWidth: 150,
+        ),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.15),
           borderRadius: BorderRadius.circular(20),
+          border: Border.all(
+            color: Colors.white.withOpacity(0.2),
+            width: 1,
+          ),
         ),
-        child: child,
+        child: Center(child: child),
+      ),
+    );
+  }
+
+  Widget _buildCoinIcon({double size = 20, Color color = Colors.amber}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color,
+            color.withOpacity(0.8),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Icon(
+          Icons.eco,
+          size: size * 0.6,
+          color: Colors.yellow[100],
+        ),
       ),
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    final currentCategoryColor = categoryColors[_selectedCategory] ?? Colors.blue;
+    final currentCategoryColor = categoryData[_selectedCategory]['color'] as MaterialColor;
     
     return Scaffold(
       backgroundColor: Colors.transparent,
@@ -198,7 +273,30 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                       onTap: () async {
                         final result = await Navigator.push(
                           context,
-                          MaterialPageRoute(builder: (context) => const CategoriesScreen()),
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => CategoriesScreen(
+                              selectedCategory: _selectedCategory,
+                            ),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(0.0, 0.03);
+                              const end = Offset.zero;
+                              const curve = Curves.easeOut;
+
+                              var tween = Tween(begin: begin, end: end).chain(
+                                CurveTween(curve: curve),
+                              );
+
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              );
+                            },
+                            transitionDuration: const Duration(milliseconds: 150),
+                            reverseTransitionDuration: const Duration(milliseconds: 150),
+                          ),
                         );
                         if (result != null) {
                           setState(() {
@@ -209,18 +307,21 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
-                          const Icon(
-                            Icons.category,
+                          Icon(
+                            currentCategoryIcon,
                             color: Colors.white,
                             size: 20,
                           ),
                           const SizedBox(width: 8),
-                          Text(
-                            _selectedCategory,
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 16,
-                              fontWeight: FontWeight.w500,
+                          Expanded(
+                            child: Text(
+                              _selectedCategory,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              textAlign: TextAlign.center,
                             ),
                           ),
                         ],
@@ -254,6 +355,39 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                 ),
                               ),
                               SizedBox(width: 30),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        // Likes and Gold Container
+                        _buildTopButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.favorite,
+                                color: Colors.white,
+                                size: 20,
+                              ),
+                              SizedBox(width: 4),
+                              Text(
+                                '128',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                              SizedBox(width: 16),
+                              _buildCoinIcon(size: 20),
+                              SizedBox(width: 4),
+                              Text(
+                                '50',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
                             ],
                           ),
                         ),
@@ -342,7 +476,7 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           animation: _textSlideAnimation,
                           builder: (context, child) {
                             return Transform.translate(
-                              offset: Offset(0, 24 + (_isSearching && _hasAnimatedText ? 16 : _textSlideAnimation.value * 16)),
+                              offset: Offset(0, 24 + (_textSlideAnimation.value * 8)),
                               child: Opacity(
                                 opacity: 1.0,
                                 child: Text(
@@ -403,7 +537,7 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
 
   Widget _buildNavItem(IconData icon, int index) {
     final isSelected = _selectedIndex == index;
-    final currentCategoryColor = categoryColors[_selectedCategory] ?? Colors.blue;
+    final currentCategoryColor = categoryData[_selectedCategory]['color'] as MaterialColor;
     
     return GestureDetector(
       onTap: () => _onItemTapped(index),

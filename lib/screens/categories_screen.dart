@@ -1,7 +1,12 @@
 import 'package:flutter/material.dart';
 
 class CategoriesScreen extends StatelessWidget {
-  const CategoriesScreen({super.key});
+  const CategoriesScreen({
+    super.key,
+    required this.selectedCategory,
+  });
+
+  final String selectedCategory;
 
   final List<Map<String, dynamic>> categories = const [
     {'name': 'Genel', 'color': Colors.blue, 'icon': Icons.public},
@@ -14,28 +19,74 @@ class CategoriesScreen extends StatelessWidget {
     {'name': 'Sanat', 'color': Colors.indigo, 'icon': Icons.palette},
   ];
 
+  MaterialColor _getCategoryColor(String categoryName) {
+    final category = categories.firstWhere(
+      (cat) => cat['name'] == categoryName,
+      orElse: () => categories.first,
+    );
+    return category['color'] as MaterialColor;
+  }
+
   @override
   Widget build(BuildContext context) {
+    final selectedColor = _getCategoryColor(selectedCategory);
+    
     return Scaffold(
-      backgroundColor: Colors.grey[900],
-      appBar: AppBar(
-        backgroundColor: Colors.transparent,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.white),
-          onPressed: () => Navigator.pop(context),
-        ),
-        title: const Text(
-          'Kategoriler',
-          style: TextStyle(color: Colors.white),
+      backgroundColor: selectedColor[900]!.withOpacity(0.95),
+      appBar: PreferredSize(
+        preferredSize: const Size.fromHeight(70),
+        child: SafeArea(
+          bottom: false,
+          child: Container(
+            margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
+            height: 46,
+            decoration: BoxDecoration(
+              color: Colors.white.withOpacity(0.15),
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Row(
+              children: [
+                Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    borderRadius: const BorderRadius.horizontal(left: Radius.circular(25)),
+                    onTap: () => Navigator.pop(context),
+                    child: Container(
+                      width: 46,
+                      height: 46,
+                      child: const Icon(
+                        Icons.arrow_back,
+                        color: Colors.white,
+                        size: 24,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                const Text(
+                  'Kategoriler',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
+            ),
+          ),
         ),
       ),
       body: ListView.builder(
-        padding: const EdgeInsets.all(16),
+        padding: const EdgeInsets.fromLTRB(16, 8, 16, 16),
         itemCount: categories.length,
         itemBuilder: (context, index) {
           final category = categories[index];
           final MaterialColor categoryColor = category['color'] as MaterialColor;
+          final bool isSelected = category['name'] == selectedCategory;
           
           return Padding(
             padding: const EdgeInsets.only(bottom: 12),
@@ -47,8 +98,16 @@ class CategoriesScreen extends StatelessWidget {
                 child: Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
                   decoration: BoxDecoration(
-                    color: categoryColor[700],
+                    color: isSelected 
+                        ? categoryColor[700]
+                        : categoryColor[700]!.withOpacity(0.5),
                     borderRadius: BorderRadius.circular(15),
+                    border: Border.all(
+                      color: isSelected
+                          ? Colors.white.withOpacity(0.5)
+                          : categoryColor[300]!.withOpacity(0.3),
+                      width: 1.5,
+                    ),
                     boxShadow: [
                       BoxShadow(
                         color: categoryColor[900]!.withOpacity(0.3),
@@ -67,18 +126,32 @@ class CategoriesScreen extends StatelessWidget {
                       const SizedBox(width: 16),
                       Text(
                         category['name'] as String,
-                        style: const TextStyle(
+                        style: TextStyle(
                           color: Colors.white,
                           fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                          fontWeight: isSelected ? FontWeight.w600 : FontWeight.w500,
                         ),
                       ),
                       const Spacer(),
-                      const Icon(
-                        Icons.arrow_forward_ios,
-                        color: Colors.white70,
-                        size: 16,
-                      ),
+                      if (isSelected)
+                        Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.2),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Icon(
+                            Icons.check,
+                            color: Colors.white,
+                            size: 16,
+                          ),
+                        )
+                      else
+                        const Icon(
+                          Icons.arrow_forward_ios,
+                          color: Colors.white70,
+                          size: 16,
+                        ),
                     ],
                   ),
                 ),
