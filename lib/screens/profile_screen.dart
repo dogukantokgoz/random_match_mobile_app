@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'messages_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String selectedMainCategory;
@@ -466,11 +467,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _onItemTapped(int index) {
-    if (index != 3) {
+    if (index == 2) {
+      // Messages icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
+    } else if (index == 1) {
+      // Call icon tapped - return to call screen
+      Navigator.pop(context);
+    } else if (index == 0) {
+      // Notifications icon tapped
       Navigator.pop(context);
     }
-    setState(() {
-      _selectedIndex = index;
-    });
   }
 } 
