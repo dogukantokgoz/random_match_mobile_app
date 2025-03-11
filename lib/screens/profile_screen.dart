@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
 import 'messages_screen.dart';
+import 'buy_gold_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String selectedMainCategory;
   final MaterialColor selectedColor;
+  final int currentGold;
 
   const ProfileScreen({
     super.key,
     required this.selectedMainCategory,
     required this.selectedColor,
+    this.currentGold = 0,
   });
 
   @override
@@ -75,24 +78,27 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildStatItem(IconData icon, String value, Color iconColor) {
-    return Row(
-      children: [
-        icon == Icons.monetization_on
-            ? _buildCoinIcon(size: 24)
-            : Icon(
-                icon,
-                color: iconColor,
-                size: 20,
-              ),
-        const SizedBox(width: 4),
-        Text(
-          value,
-          style: const TextStyle(
-            fontSize: 16,
-            fontWeight: FontWeight.w600,
+    return GestureDetector(
+      onTap: icon == Icons.monetization_on ? _navigateToBuyGold : null,
+      child: Row(
+        children: [
+          icon == Icons.monetization_on
+              ? _buildCoinIcon(size: 24)
+              : Icon(
+                  icon,
+                  color: iconColor,
+                  size: 20,
+                ),
+          const SizedBox(width: 4),
+          Text(
+            value,
+            style: const TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w600,
+            ),
           ),
-        ),
-      ],
+        ],
+      ),
     );
   }
 
@@ -248,6 +254,38 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  void _navigateToBuyGold() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => BuyGoldScreen(
+          selectedMainCategory: widget.selectedMainCategory,
+          selectedColor: widget.selectedColor,
+          currentGold: widget.currentGold,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.03);
+          const end = Offset.zero;
+          const curve = Curves.easeOut;
+
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 150),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
       ),
     );
   }

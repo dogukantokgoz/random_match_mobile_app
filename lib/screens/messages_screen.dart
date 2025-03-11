@@ -1,15 +1,18 @@
 import 'package:flutter/material.dart';
 import 'profile_screen.dart';
 import 'chat_screen.dart';
+import 'buy_gold_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
   final String selectedMainCategory;
   final MaterialColor selectedColor;
+  final int currentGold;
 
   const MessagesScreen({
     super.key,
     required this.selectedMainCategory,
     required this.selectedColor,
+    this.currentGold = 0,
   });
 
   @override
@@ -49,6 +52,43 @@ class _MessagesScreenState extends State<MessagesScreen> {
       'status': 'Online'
     },
   ];
+
+  void _onBuyGoldPressed() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => BuyGoldScreen(
+          selectedMainCategory: widget.selectedMainCategory,
+          selectedColor: widget.selectedColor,
+          currentGold: widget.currentGold,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.03);
+          const end = Offset.zero;
+          const curve = Curves.easeOut;
+
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 150),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
+      ),
+    );
+  }
+
+  // Altın satın al seçeneğine tıklandığında
+  void _handleBuyGoldOption() {
+    _onBuyGoldPressed();
+  }
 
   Widget _buildMessageItem(Map<String, dynamic> message) {
     return Container(
