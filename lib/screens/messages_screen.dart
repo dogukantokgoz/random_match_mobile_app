@@ -263,14 +263,24 @@ class _MessagesScreenState extends State<MessagesScreen> {
             ),
             child: Stack(
               children: [
+                Center(
+                  child: Text(
+                    'Messages',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
                 Positioned(
-                  left: 0,
+                  right: 0,
                   top: 0,
                   bottom: 0,
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
-                      borderRadius: const BorderRadius.horizontal(left: Radius.circular(25)),
+                      borderRadius: const BorderRadius.horizontal(right: Radius.circular(25)),
                       onTap: () {
                         Navigator.pop(context);
                       },
@@ -283,16 +293,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           size: 24,
                         ),
                       ),
-                    ),
-                  ),
-                ),
-                Center(
-                  child: Text(
-                    'Messages',
-                    style: const TextStyle(
-                      fontSize: 18,
-                      fontWeight: FontWeight.w600,
-                      color: Colors.white,
                     ),
                   ),
                 ),

@@ -59,38 +59,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  void _navigateToBuyGold() {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => BuyGoldScreen(
-          selectedMainCategory: widget.selectedMainCategory,
-          selectedColor: widget.selectedColor,
-          currentGold: widget.currentGold,
-        ),
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 0.03);
-          const end = Offset.zero;
-          const curve = Curves.easeOut;
-
-          var tween = Tween(begin: begin, end: end).chain(
-            CurveTween(curve: curve),
-          );
-
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 150),
-        reverseTransitionDuration: const Duration(milliseconds: 150),
-      ),
-    );
-  }
-
   void _onItemTapped(int index) {
     if (index == 1) { // Bildirimler
       _navigateToNotifications();
@@ -105,7 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[100],
+      backgroundColor: Colors.grey[50],
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: SafeArea(
@@ -113,24 +81,22 @@ class _HomeScreenState extends State<HomeScreen> {
           child: Container(
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             height: 46,
-            child: Row(
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(25),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.1),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Stack(
               children: [
-                // Ana başlık
-                Expanded(
-                  child: Container(
-                    height: 46,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(23),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  child: Center(
                     child: Row(
                       children: [
                         const Expanded(
@@ -142,29 +108,48 @@ class _HomeScreenState extends State<HomeScreen> {
                             ),
                           ),
                         ),
-                        GestureDetector(
-                          onTap: () => _navigateToBuyGold(),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                              horizontal: 12,
-                              vertical: 6,
-                            ),
-                            decoration: BoxDecoration(
-                              color: widget.selectedColor.withOpacity(0.1),
-                              borderRadius: BorderRadius.circular(20),
-                            ),
-                            child: Row(
-                              children: [
-                                _buildCoinIcon(size: 18),
-                                const SizedBox(width: 4),
-                                Text(
-                                  '${widget.currentGold}',
-                                  style: TextStyle(
-                                    color: widget.selectedColor,
-                                    fontWeight: FontWeight.bold,
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(20),
+                            onTap: () {
+                              print("Gold button pressed"); // Debug print
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => BuyGoldScreen(
+                                    selectedMainCategory: widget.selectedMainCategory,
+                                    selectedColor: widget.selectedColor,
+                                    currentGold: widget.currentGold,
                                   ),
                                 ),
-                              ],
+                              );
+                            },
+                            child: Padding(
+                              padding: const EdgeInsets.all(4),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                  horizontal: 12,
+                                  vertical: 6,
+                                ),
+                                decoration: BoxDecoration(
+                                  color: widget.selectedColor.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(20),
+                                ),
+                                child: Row(
+                                  children: [
+                                    _buildCoinIcon(size: 18),
+                                    const SizedBox(width: 4),
+                                    Text(
+                                      '${widget.currentGold}',
+                                      style: TextStyle(
+                                        color: widget.selectedColor,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
                         ),

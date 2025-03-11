@@ -23,7 +23,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: 0.85,
+      viewportFraction: 0.75,
       initialPage: 0,
     );
   }
@@ -39,25 +39,28 @@ class _PremiumScreenState extends State<PremiumScreen> {
     required List<String> features,
     required String price,
     required String oldPrice,
+    required int index,
+    required int totalItems,
   }) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.65,
+      width: MediaQuery.of(context).size.width * 0.7,
       margin: const EdgeInsets.symmetric(horizontal: 12),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           Container(
             decoration: BoxDecoration(
-              color: Colors.grey[50],
+              color: Colors.grey[100],
               borderRadius: BorderRadius.circular(16),
               boxShadow: [
                 BoxShadow(
-                  color: Colors.black.withOpacity(0.05),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
+                  color: Colors.black.withOpacity(0.08),
+                  blurRadius: 15,
+                  offset: const Offset(0, 4),
                 ),
               ],
             ),
+            clipBehavior: Clip.hardEdge,
             child: Material(
               color: Colors.transparent,
               child: InkWell(
@@ -68,9 +71,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
                   children: [
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
-                        color: Colors.grey[50],
+                        color: widget.selectedColor.withOpacity(0.08),
                         borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
                       ),
                       child: Text(
@@ -78,33 +81,34 @@ class _PremiumScreenState extends State<PremiumScreen> {
                         textAlign: TextAlign.center,
                         style: TextStyle(
                           color: widget.selectedColor,
-                          fontSize: 20,
+                          fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                     ),
                     Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 12, 16, 12),
+                      padding: const EdgeInsets.fromLTRB(20, 14, 16, 14),
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           ...features.map((feature) => Padding(
-                            padding: const EdgeInsets.only(bottom: 6),
+                            padding: const EdgeInsets.only(bottom: 8),
                             child: Row(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 Icon(
                                   Icons.check_circle,
                                   color: widget.selectedColor,
-                                  size: 16,
+                                  size: 15,
                                 ),
                                 const SizedBox(width: 8),
                                 Expanded(
                                   child: Text(
                                     feature,
-                                    style: const TextStyle(
-                                      fontSize: 12,
-                                      color: Colors.black87,
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      color: Colors.grey[800],
+                                      height: 1.4,
                                     ),
                                   ),
                                 ),
@@ -116,9 +120,9 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     ),
                     Container(
                       width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      padding: const EdgeInsets.symmetric(vertical: 14),
                       decoration: BoxDecoration(
-                        color: Colors.grey[50],
+                        color: widget.selectedColor.withOpacity(0.08),
                         borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
                       ),
                       child: Row(
@@ -128,16 +132,16 @@ class _PremiumScreenState extends State<PremiumScreen> {
                             price,
                             style: const TextStyle(
                               color: Colors.black87,
-                              fontSize: 20,
+                              fontSize: 18,
                               fontWeight: FontWeight.bold,
                             ),
                           ),
                           const SizedBox(width: 8),
                           Text(
                             oldPrice,
-                            style: TextStyle(
-                              color: Colors.grey[400],
-                              fontSize: 13,
+                            style: const TextStyle(
+                              color: Colors.black38,
+                              fontSize: 12,
                               decoration: TextDecoration.lineThrough,
                             ),
                           ),
@@ -157,7 +161,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: SafeArea(
@@ -204,7 +208,27 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     ),
                   ),
                 ),
-                const SizedBox(width: 46),
+                Positioned(
+                  right: 0,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.horizontal(right: Radius.circular(25)),
+                      onTap: () {
+                        Navigator.of(context).popUntil((route) => route.isFirst);
+                      },
+                      child: Container(
+                        width: 46,
+                        height: 46,
+                        child: const Icon(
+                          Icons.phone,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
@@ -215,50 +239,39 @@ class _PremiumScreenState extends State<PremiumScreen> {
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.6,
           ),
-          child: PageView(
+          child: PageView.builder(
             controller: _pageController,
             padEnds: false,
-            children: [
-              _buildPremiumPackage(
+            itemCount: 3,
+            itemBuilder: (context, index) {
+              return _buildPremiumPackage(
                 context,
-                title: 'Premium 1',
-                features: [
+                title: 'Premium ${index + 1}',
+                features: index == 0 ? [
                   'Özel profil rozeti',
                   'Reklamsız deneyim',
                   'Özel mesaj bildirimleri',
                   'Öncelikli destek',
                   'Özel temalar',
-                ],
-                price: '₺49.99',
-                oldPrice: '₺99.99',
-              ),
-              _buildPremiumPackage(
-                context,
-                title: 'Premium 2',
-                features: [
+                ] : index == 1 ? [
                   'Premium 1\'in tüm özellikleri',
                   'Sınırsız mesajlaşma',
                   'Özel emoji paketi',
                   'Profil istatistikleri',
                   'Gelişmiş arama filtreleri',
-                ],
-                price: '₺79.99',
-                oldPrice: '₺159.99',
-              ),
-              _buildPremiumPackage(
-                context,
-                title: 'Premium 3',
-                features: [
+                ] : [
                   'Premium 2\'nin tüm özellikleri',
                   'VIP müşteri desteği',
                   'Özel etkinlik davetiyeleri',
                   'Profil özelleştirme',
                   'Beta özelliklere erken erişim',
                 ],
-                price: '₺129.99',
-                oldPrice: '₺259.99',
-              ),
-            ],
+                price: index == 0 ? '₺49.99' : index == 1 ? '₺79.99' : '₺129.99',
+                oldPrice: index == 0 ? '₺99.99' : index == 1 ? '₺159.99' : '₺259.99',
+                index: index,
+                totalItems: 3,
+              );
+            },
           ),
         ),
       ),
