@@ -5,6 +5,7 @@ import 'buy_gold_screen.dart';
 import '../components/bottom_nav_bar.dart';
 import 'call_screen.dart';
 import 'notifications_screen.dart';
+import '../components/profile_avatar_card.dart';
 
 class MessagesScreen extends StatefulWidget {
   final String selectedMainCategory;
@@ -31,28 +32,36 @@ class _MessagesScreenState extends State<MessagesScreen> {
       'lastMessage': 'See you tomorrow!',
       'time': '2 min ago',
       'unread': true,
-      'status': 'Online'
+      'status': 'Online',
+      'level': 5,
+      'likes': 128
     },
     {
       'name': 'Jane Smith',
       'lastMessage': 'Thanks for the help',
       'time': '1 hour ago',
       'unread': false,
-      'status': 'Offline'
+      'status': 'Offline',
+      'level': 3,
+      'likes': 64
     },
     {
       'name': 'Mike Johnson',
       'lastMessage': 'Great idea!',
       'time': '2 hours ago',
       'unread': true,
-      'status': 'Away'
+      'status': 'Away',
+      'level': 7,
+      'likes': 256
     },
     {
       'name': 'Sarah Wilson',
       'lastMessage': 'Let me know when you\'re free',
       'time': 'Yesterday',
       'unread': false,
-      'status': 'Online'
+      'status': 'Online',
+      'level': 4,
+      'likes': 96
     },
   ];
 
@@ -146,39 +155,19 @@ class _MessagesScreenState extends State<MessagesScreen> {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                Stack(
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.person,
-                        color: Colors.grey[600],
-                        size: 30,
-                      ),
-                    ),
-                    if (message['status'] == 'Online')
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          width: 14,
-                          height: 14,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+                ProfileAvatarCard(
+                  name: message['name'],
+                  level: message['level'],
+                  likes: message['likes'],
+                  themeColor: widget.selectedColor,
+                  showEditButton: false,
+                  size: 50,
+                  status: message['status'],
+                  showStats: false,
+                  showShadow: false,
+                  borderRadius: 25,
+                  borderWidth: 2,
+                  backgroundColor: Colors.grey[50]!,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -192,7 +181,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           fontWeight: FontWeight.w500,
                         ),
                       ),
-                      const SizedBox(height: 4),
                       Text(
                         message['lastMessage'],
                         style: TextStyle(

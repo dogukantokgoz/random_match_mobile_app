@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/bottom_nav_bar.dart';
+import '../components/profile_avatar_card.dart';
 import 'profile_screen.dart';
 import 'messages_screen.dart';
 import 'call_screen.dart';
@@ -31,6 +32,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         'name': 'Ahmet Yılmaz',
         'image': null, // Profil resmi null ise varsayılan icon kullanılacak
         'status': 'Online',
+        'level': 6,
+        'likes': 156
       },
       'type': 'poke',
       'time': '10:00',
@@ -41,6 +44,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         'name': 'Mehmet Demir',
         'image': null,
         'status': 'Offline',
+        'level': 4,
+        'likes': 89
       },
       'type': 'poke',
       'time': '09:45',
@@ -172,48 +177,19 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                // User Avatar
-                Stack(
-                  children: [
-                    Container(
-                      width: 50,
-                      height: 50,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        shape: BoxShape.circle,
-                      ),
-                      child: notification['user']['image'] != null
-                          ? ClipRRect(
-                              borderRadius: BorderRadius.circular(25),
-                              child: Image.network(
-                                notification['user']['image'],
-                                fit: BoxFit.cover,
-                              ),
-                            )
-                          : Icon(
-                              Icons.person,
-                              color: Colors.grey[600],
-                              size: 30,
-                            ),
-                    ),
-                    if (notification['user']['status'] == 'Online')
-                      Positioned(
-                        right: 0,
-                        bottom: 0,
-                        child: Container(
-                          width: 14,
-                          height: 14,
-                          decoration: BoxDecoration(
-                            color: Colors.green,
-                            shape: BoxShape.circle,
-                            border: Border.all(
-                              color: Colors.white,
-                              width: 2,
-                            ),
-                          ),
-                        ),
-                      ),
-                  ],
+                ProfileAvatarCard(
+                  name: notification['user']['name'],
+                  level: notification['user']['level'],
+                  likes: notification['user']['likes'],
+                  themeColor: widget.selectedColor,
+                  showEditButton: false,
+                  size: 50,
+                  status: notification['user']['status'],
+                  showStats: false,
+                  showShadow: false,
+                  borderRadius: 25,
+                  borderWidth: 2,
+                  backgroundColor: notification['read'] ? Colors.white : widget.selectedColor.withOpacity(0.1),
                 ),
                 const SizedBox(width: 16),
                 Expanded(

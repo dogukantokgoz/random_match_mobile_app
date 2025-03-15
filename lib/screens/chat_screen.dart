@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:random_match/components/bottom_nav_bar.dart';
+import '../components/profile_avatar_card.dart';
 import 'messages_screen.dart';
 import 'buy_gold_screen.dart';
 
@@ -250,48 +252,37 @@ class _ChatScreenState extends State<ChatScreen> {
                       ],
                     ),
                     child: Row(
-                      mainAxisAlignment: MainAxisAlignment.start,
                       children: [
-                        Stack(
-                          children: [
-                            Container(
-                              width: 32,
-                              height: 32,
-                              decoration: BoxDecoration(
-                                color: Colors.grey[200],
-                                shape: BoxShape.circle,
-                              ),
-                              child: Icon(
-                                Icons.person,
-                                color: Colors.grey[600],
-                                size: 20,
-                              ),
-                            ),
-                            if (widget.user['status'] == 'Online')
-                              Positioned(
-                                right: 0,
-                                bottom: 0,
-                                child: Container(
-                                  width: 10,
-                                  height: 10,
-                                  decoration: BoxDecoration(
-                                    color: Colors.green,
-                                    shape: BoxShape.circle,
-                                    border: Border.all(
-                                      color: Colors.white,
-                                      width: 2,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                          ],
+                        ProfileAvatarCard(
+                          name: widget.user['name'],
+                          level: widget.user['level'],
+                          likes: widget.user['likes'],
+                          themeColor: widget.selectedColor,
+                          showEditButton: false,
+                          size: 36,
+                          status: widget.user['status'],
+                          showStats: false,
+                          showShadow: false,
+                          borderRadius: 18,
+                          borderWidth: 2,
+                          backgroundColor: Colors.grey[50]!,
                         ),
-                        const SizedBox(width: 8),
-                        Text(
-                          widget.user['name'],
-                          style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w500,
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                widget.user['name'],
+                                style: const TextStyle(
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ],
                           ),
                         ),
                       ],

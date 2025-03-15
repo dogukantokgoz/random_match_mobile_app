@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../components/bottom_nav_bar.dart';
+import '../components/profile_avatar_card.dart';
 import 'messages_screen.dart';
 import 'buy_gold_screen.dart';
 import 'call_screen.dart';
@@ -27,23 +28,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
   
   final Map<String, Map<String, dynamic>> categoryData = {
     'Arkadaşlar': {'color': Colors.blue, 'icon': Icons.people, 'items': [
-      {'name': 'John Doe', 'status': 'Online'},
-      {'name': 'Jane Smith', 'status': 'Offline'},
-      {'name': 'Mike Johnson', 'status': 'Away'},
+      {'name': 'John Doe', 'status': 'Online', 'level': 5, 'likes': 128},
+      {'name': 'Jane Smith', 'status': 'Offline', 'level': 3, 'likes': 64},
+      {'name': 'Mike Johnson', 'status': 'Away', 'level': 7, 'likes': 256},
     ]},
     'İstekler': {'color': Colors.green, 'icon': Icons.person_add, 'items': [
-      {'name': 'Alice Brown', 'status': 'Pending'},
-      {'name': 'Bob Wilson', 'status': 'Pending'},
-      {'name': 'Carol White', 'status': 'Pending'},
+      {'name': 'Alice Brown', 'status': 'Online', 'level': 4, 'likes': 96},
+      {'name': 'Bob Wilson', 'status': 'Away', 'level': 6, 'likes': 158},
+      {'name': 'Carol White', 'status': 'Online', 'level': 2, 'likes': 42},
     ]},
     'Sildiklerim': {'color': Colors.red, 'icon': Icons.person_remove, 'items': [
-      {'name': 'David Lee', 'status': 'Blocked'},
-      {'name': 'Emma Davis', 'status': 'Removed'},
+      {'name': 'David Lee', 'status': 'Offline', 'level': 8, 'likes': 312},
+      {'name': 'Emma Davis', 'status': 'Offline', 'level': 5, 'likes': 145},
     ]},
   };
 
-  List<Map<String, String>> get currentItems => 
-    (categoryData[_selectedCategory]!['items'] as List<Map<String, String>>);
+  List<Map<String, dynamic>> get currentItems => 
+    (categoryData[_selectedCategory]!['items'] as List<dynamic>).cast<Map<String, dynamic>>();
 
   MaterialColor get currentCategoryColor => widget.selectedColor;
   IconData get currentCategoryIcon => categoryData[_selectedCategory]!['icon'] as IconData;
@@ -189,7 +190,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildFriendItem(String name, String status) {
+  Widget _buildFriendItem(String name, String status, int level, int likes) {
     return Container(
       margin: const EdgeInsets.only(bottom: 12),
       decoration: BoxDecoration(
@@ -212,18 +213,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                Container(
-                  width: 50,
-                  height: 50,
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    shape: BoxShape.circle,
-                  ),
-                  child: Icon(
-                    Icons.person,
-                    color: Colors.grey[600],
-                    size: 30,
-                  ),
+                ProfileAvatarCard(
+                  name: name,
+                  level: level,
+                  likes: likes,
+                  themeColor: currentCategoryColor,
+                  showEditButton: false,
+                  size: 50,
+                  status: status,
+                  showStats: false,
+                  showShadow: false,
+                  borderRadius: 25,
+                  borderWidth: 2,
+                  backgroundColor: Colors.grey[50]!,
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -456,49 +458,15 @@ class _ProfileScreenState extends State<ProfileScreen> {
             Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Column(
-                  children: [
-                    Container(
-                      width: 80,
-                      height: 80,
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        shape: BoxShape.circle,
-                      ),
-                      child: Icon(
-                        Icons.person,
-                        size: 45,
-                        color: Colors.grey[500],
-                      ),
-                    ),
-                    const SizedBox(height: 8),
-                    Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                      decoration: BoxDecoration(
-                        color: Colors.grey[200],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.edit,
-                            size: 14,
-                            color: Colors.grey[600],
-                          ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'Edit Profile',
-                            style: TextStyle(
-                              color: Colors.grey[600],
-                              fontSize: 12,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                  ],
+                ProfileAvatarCard(
+                  name: 'Nickname',
+                  level: 5,
+                  likes: 128,
+                  themeColor: currentColor,
+                  showEditButton: true,
+                  onEditPressed: () {
+                    // Edit profile logic
+                  },
                 ),
                 const SizedBox(width: 16),
                 Expanded(
@@ -522,15 +490,37 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     ],
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.end,
-                  children: [
-                    _buildStatItem(Icons.star, 'Level 5', currentColor),
-                    const SizedBox(height: 4),
-                    _buildStatItem(Icons.favorite, '128', currentColor),
-                    const SizedBox(height: 4),
-                    _buildStatItem(Icons.monetization_on, '${widget.currentGold}', Colors.amber),
-                  ],
+                GestureDetector(
+                  onTap: _navigateToBuyGold,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(12),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.05),
+                          blurRadius: 10,
+                          spreadRadius: 0,
+                          offset: const Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        _buildCoinIcon(size: 20),
+                        const SizedBox(width: 6),
+                        Text(
+                          '${widget.currentGold}',
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ],
             ),
@@ -556,7 +546,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: _buildCategoryCount(currentItems.length),
             ),
             const SizedBox(height: 16),
-            ...currentItems.map((item) => _buildFriendItem(item['name']!, item['status']!)).toList(),
+            ...currentItems.map((item) => _buildFriendItem(
+              item['name']!, 
+              item['status']!,
+              item['level'] as int,
+              item['likes'] as int,
+            )).toList(),
           ],
         ),
       ),
