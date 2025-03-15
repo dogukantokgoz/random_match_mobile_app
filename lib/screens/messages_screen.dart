@@ -2,6 +2,9 @@ import 'package:flutter/material.dart';
 import 'profile_screen.dart';
 import 'chat_screen.dart';
 import 'buy_gold_screen.dart';
+import '../components/bottom_nav_bar.dart';
+import 'call_screen.dart';
+import 'notifications_screen.dart';
 
 class MessagesScreen extends StatefulWidget {
   final String selectedMainCategory;
@@ -241,11 +244,8 @@ class _MessagesScreenState extends State<MessagesScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final isDarkMode = Theme.of(context).brightness == Brightness.dark;
-    final currentColor = widget.selectedColor;
-    
     return Scaffold(
-      backgroundColor: isDarkMode ? Colors.black : Colors.grey[100],
+      backgroundColor: Colors.grey[100],
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: SafeArea(
@@ -254,7 +254,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             height: 46,
             decoration: BoxDecoration(
-              color: currentColor[900]!.withOpacity(0.95),
+              color: widget.selectedColor[900]!.withOpacity(0.95),
               borderRadius: BorderRadius.circular(25),
               border: Border.all(
                 color: Colors.white.withOpacity(0.2),
@@ -301,61 +301,29 @@ class _MessagesScreenState extends State<MessagesScreen> {
           ),
         ),
       ),
-      body: SingleChildScrollView(
+      body: ListView.builder(
         padding: const EdgeInsets.all(16),
-        child: Column(
-          children: messages.map((message) => _buildMessageItem(message)).toList(),
-        ),
+        itemCount: messages.length,
+        itemBuilder: (context, index) => _buildMessageItem(messages[index]),
       ),
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              spreadRadius: 0,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.notifications, 0, _selectedIndex == 0),
-              _buildNavItem(Icons.call, 1, _selectedIndex == 1),
-              _buildNavItem(Icons.message, 2, _selectedIndex == 2),
-              _buildNavItem(Icons.person, 3, _selectedIndex == 3),
-            ],
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, int index, bool isSelected) {
-    return GestureDetector(
-      onTap: () => _onItemTapped(index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? widget.selectedColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(
-          icon,
-          color: isSelected ? Colors.white : Colors.grey[600],
-          size: 28,
-        ),
+      bottomNavigationBar: BottomNavBar(
+        selectedIndex: _selectedIndex,
+        selectedColor: widget.selectedColor,
+        onItemSelected: (index) {
+          setState(() {
+            _selectedIndex = index;
+          });
+          _onItemTapped(index);
+        },
       ),
     );
   }
 
   void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    
     if (index == 3) {
       // Profile icon tapped
       Navigator.pushReplacement(
@@ -387,11 +355,66 @@ class _MessagesScreenState extends State<MessagesScreen> {
         ),
       );
     } else if (index == 1) {
-      // Call icon tapped - return to call screen
-      Navigator.pop(context);
+      // Call icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
+            selectedCategory: widget.selectedMainCategory,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
     } else if (index == 0) {
       // Notifications icon tapped
-      Navigator.pop(context);
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => NotificationsScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+            selectedIndex: 0,
+            onItemSelected: (index) {},
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
     }
   }
 } 

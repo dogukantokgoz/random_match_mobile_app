@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import '../components/bottom_nav_bar.dart';
+import 'profile_screen.dart';
+import 'messages_screen.dart';
+import 'call_screen.dart';
 
 class NotificationsScreen extends StatefulWidget {
   final String selectedMainCategory;
@@ -19,6 +23,8 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
+  int _selectedIndex = 0;
+
   final List<Map<String, dynamic>> notifications = [
     {
       'user': {
@@ -41,6 +47,103 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
       'read': true,
     },
   ];
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    
+    if (index == 3) {
+      // Profile icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => ProfileScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
+    } else if (index == 2) {
+      // Messages icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
+    } else if (index == 1) {
+      // Call icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
+            selectedCategory: widget.selectedMainCategory,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
+    }
+  }
 
   Widget _buildNotificationItem(Map<String, dynamic> notification) {
     return Container(
@@ -166,50 +269,42 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
           child: Container(
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             height: 46,
-            child: Row(
+            decoration: BoxDecoration(
+              color: widget.selectedColor[900]!.withOpacity(0.95),
+              borderRadius: BorderRadius.circular(25),
+              border: Border.all(
+                color: Colors.white.withOpacity(0.2),
+                width: 1,
+              ),
+            ),
+            child: Stack(
               children: [
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    color: widget.selectedColor[900]!.withOpacity(0.95),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(23),
-                      onTap: () => Navigator.pop(context),
-                      child: const Icon(
-                        Icons.arrow_back,
-                        color: Colors.white,
-                        size: 24,
-                      ),
+                Center(
+                  child: Text(
+                    'Bildirimler',
+                    style: const TextStyle(
+                      fontSize: 18,
+                      fontWeight: FontWeight.w600,
+                      color: Colors.white,
                     ),
                   ),
                 ),
-                const SizedBox(width: 8),
-                Expanded(
-                  child: Container(
-                    height: 46,
-                    padding: const EdgeInsets.symmetric(horizontal: 16),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(23),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.05),
-                          blurRadius: 10,
-                          offset: const Offset(0, 2),
-                        ),
-                      ],
-                    ),
-                    child: const Center(
-                      child: Text(
-                        'Bildirimler',
-                        style: TextStyle(
-                          fontSize: 18,
-                          fontWeight: FontWeight.w500,
+                Positioned(
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.horizontal(left: Radius.circular(25)),
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        width: 46,
+                        height: 46,
+                        child: const Icon(
+                          Icons.arrow_back,
+                          color: Colors.white,
+                          size: 24,
                         ),
                       ),
                     ),
@@ -225,69 +320,10 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         itemCount: notifications.length,
         itemBuilder: (context, index) => _buildNotificationItem(notifications[index]),
       ),
-      bottomNavigationBar: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              offset: const Offset(0, -2),
-            ),
-          ],
-        ),
-        child: SafeArea(
-          child: Container(
-            height: 56,
-            margin: const EdgeInsets.only(
-              left: 16,
-              right: 16,
-              bottom: 12,
-              top: 12,
-            ),
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(28),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.1),
-                  blurRadius: 10,
-                  offset: const Offset(0, 2),
-                ),
-              ],
-            ),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                _buildNavItem(0, Icons.home_outlined, Icons.home),
-                _buildNavItem(1, Icons.message_outlined, Icons.message),
-                _buildNavItem(2, Icons.notifications_outlined, Icons.notifications),
-                _buildNavItem(3, Icons.person_outline, Icons.person),
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildNavItem(int index, IconData outlinedIcon, IconData filledIcon) {
-    final isSelected = widget.selectedIndex == index;
-    return Material(
-      color: Colors.transparent,
-      child: InkWell(
-        borderRadius: BorderRadius.circular(16),
-        onTap: () => widget.onItemSelected(index),
-        child: Container(
-          width: 56,
-          height: 56,
-          padding: const EdgeInsets.all(16),
-          child: Icon(
-            isSelected ? filledIcon : outlinedIcon,
-            color: isSelected ? widget.selectedColor : Colors.grey[400],
-            size: 24,
-          ),
-        ),
+      bottomNavigationBar: BottomNavBar(
+        selectedIndex: _selectedIndex,
+        selectedColor: widget.selectedColor,
+        onItemSelected: _onItemTapped,
       ),
     );
   }

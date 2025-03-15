@@ -2,9 +2,19 @@ import 'package:flutter/material.dart';
 import 'categories_screen.dart';
 import 'profile_screen.dart';
 import 'messages_screen.dart';
+import 'buy_gold_screen.dart';
+import 'notifications_screen.dart';
+import '../components/bottom_nav_bar.dart';
 
 class CallScreen extends StatefulWidget {
-  const CallScreen({super.key});
+  final int currentGold;
+  final String? selectedCategory;
+
+  const CallScreen({
+    super.key,
+    this.currentGold = 0,
+    this.selectedCategory,
+  });
 
   @override
   State<CallScreen> createState() => _CallScreenState();
@@ -12,7 +22,7 @@ class CallScreen extends StatefulWidget {
 
 class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
   int _selectedIndex = 1;
-  String _selectedCategory = 'Genel';
+  late String _selectedCategory;
   bool _isSearching = false;
   late AnimationController _animationController1;
   late AnimationController _animationController2;
@@ -37,6 +47,8 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
+    _selectedCategory = widget.selectedCategory ?? 'Genel';
+    
     _animationController1 = AnimationController(
       duration: const Duration(milliseconds: 1500),
       vsync: this,
@@ -99,7 +111,7 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
     
     if (index == 3) {
       // Profile icon tapped
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) => ProfileScreen(
@@ -126,14 +138,10 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
           transitionDuration: const Duration(milliseconds: 150),
           reverseTransitionDuration: const Duration(milliseconds: 150),
         ),
-      ).then((_) {
-        setState(() {
-          _selectedIndex = 1;
-        });
-      });
+      );
     } else if (index == 2) {
       // Messages icon tapped
-      Navigator.push(
+      Navigator.pushReplacement(
         context,
         PageRouteBuilder(
           pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
@@ -160,11 +168,39 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
           transitionDuration: const Duration(milliseconds: 150),
           reverseTransitionDuration: const Duration(milliseconds: 150),
         ),
-      ).then((_) {
-        setState(() {
-          _selectedIndex = 1;
-        });
-      });
+      );
+    } else if (index == 0) {
+      // Notifications icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => NotificationsScreen(
+            selectedMainCategory: _selectedCategory,
+            selectedColor: currentCategoryColor,
+            selectedIndex: 0,
+            onItemSelected: (index) {},
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
     }
   }
 
@@ -277,12 +313,44 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
     );
   }
 
+  void _navigateToBuyGold() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => BuyGoldScreen(
+          selectedMainCategory: _selectedCategory,
+          selectedColor: currentCategoryColor,
+          currentGold: widget.currentGold,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.03);
+          const end = Offset.zero;
+          const curve = Curves.easeOut;
+
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 150),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final currentCategoryColor = categoryData[_selectedCategory]['color'] as MaterialColor;
     
     return Scaffold(
-      backgroundColor: Colors.transparent,
+      backgroundColor: currentCategoryColor[900],
       body: Stack(
         children: [
           Container(
@@ -304,63 +372,65 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                   Positioned(
                     left: 16,
                     top: 16,
-                    child: _buildTopButton(
-                      onTap: () async {
-                        final result = await Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => CategoriesScreen(
-                              selectedCategory: _selectedCategory,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              const begin = Offset(0.0, 0.03);
-                              const end = Offset.zero;
-                              const curve = Curves.easeOut;
-
-                              var tween = Tween(begin: begin, end: end).chain(
-                                CurveTween(curve: curve),
-                              );
-
-                              return SlideTransition(
-                                position: animation.drive(tween),
-                                child: FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                ),
-                              );
-                            },
-                            transitionDuration: const Duration(milliseconds: 150),
-                            reverseTransitionDuration: const Duration(milliseconds: 150),
-                          ),
-                        );
-                        if (result != null) {
-                          setState(() {
-                            _selectedCategory = result as String;
-                          });
-                        }
-                      },
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Icon(
-                            currentCategoryIcon,
-                            color: Colors.white,
-                            size: 20,
-                          ),
-                          const SizedBox(width: 8),
-                          Expanded(
-                            child: Text(
-                              _selectedCategory,
-                              style: const TextStyle(
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        _buildTopButton(
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Icon(
+                                currentCategoryIcon,
                                 color: Colors.white,
-                                fontSize: 16,
-                                fontWeight: FontWeight.w500,
+                                size: 20,
                               ),
-                              textAlign: TextAlign.center,
-                            ),
+                              const SizedBox(width: 8),
+                              Text(
+                                _selectedCategory,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 16,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
-                      ),
+                          onTap: () async {
+                            final result = await Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => CategoriesScreen(
+                                  selectedCategory: _selectedCategory,
+                                ),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  const begin = Offset(0.0, 0.03);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeOut;
+
+                                  var tween = Tween(begin: begin, end: end).chain(
+                                    CurveTween(curve: curve),
+                                  );
+
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                                transitionDuration: const Duration(milliseconds: 150),
+                                reverseTransitionDuration: const Duration(milliseconds: 150),
+                              ),
+                            );
+                            if (result != null) {
+                              setState(() {
+                                _selectedCategory = result as String;
+                              });
+                            }
+                          },
+                        ),
+                      ],
                     ),
                   ),
                   
@@ -414,13 +484,20 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                 ),
                               ),
                               SizedBox(width: 16),
-                              _buildCoinIcon(size: 20),
-                              SizedBox(width: 4),
-                              Text(
-                                '50',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                              GestureDetector(
+                                onTap: _navigateToBuyGold,
+                                child: Row(
+                                  children: [
+                                    _buildCoinIcon(size: 20),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      '${widget.currentGold}',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -432,32 +509,46 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
                             mainAxisSize: MainAxisSize.min,
-                            children: const [
-                              Icon(
-                                Icons.person_add,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                '2',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                            children: [
+                              GestureDetector(
+                                onTap: _navigateToBuyGold,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.person_add,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      '2',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                               SizedBox(width: 16),
-                              Icon(
-                                Icons.timer,
-                                color: Colors.white,
-                                size: 20,
-                              ),
-                              SizedBox(width: 4),
-                              Text(
-                                '2',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontWeight: FontWeight.bold,
+                              GestureDetector(
+                                onTap: _navigateToBuyGold,
+                                child: Row(
+                                  children: [
+                                    Icon(
+                                      Icons.timer,
+                                      color: Colors.white,
+                                      size: 20,
+                                    ),
+                                    SizedBox(width: 4),
+                                    Text(
+                                      '2',
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
+                                      ),
+                                    ),
+                                  ],
                                 ),
                               ),
                             ],
@@ -533,60 +624,12 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
               ),
             ),
           ),
-          // Bottom Navigation Bar
-          Positioned(
-            left: 16,
-            right: 16,
-            bottom: 16,
-            child: Container(
-              decoration: BoxDecoration(
-                color: Colors.grey[300]?.withOpacity(0.95),
-                borderRadius: BorderRadius.circular(25),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.black.withOpacity(0.1),
-                    blurRadius: 10,
-                    spreadRadius: 0,
-                    offset: const Offset(0, 2),
-                  ),
-                ],
-              ),
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceAround,
-                  children: [
-                    _buildNavItem(Icons.notifications, 0),
-                    _buildNavItem(Icons.call, 1),
-                    _buildNavItem(Icons.message, 2),
-                    _buildNavItem(Icons.person, 3),
-                  ],
-                ),
-              ),
-            ),
-          ),
         ],
       ),
-    );
-  }
-
-  Widget _buildNavItem(IconData icon, int index) {
-    final isSelected = _selectedIndex == index;
-    final currentCategoryColor = categoryData[_selectedCategory]['color'] as MaterialColor;
-    
-    return GestureDetector(
-      onTap: () => _onItemTapped(index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? currentCategoryColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(
-          icon,
-          color: isSelected ? Colors.white : Colors.grey[600],
-          size: 28,
-        ),
+      bottomNavigationBar: BottomNavBar(
+        selectedIndex: _selectedIndex,
+        selectedColor: currentCategoryColor,
+        onItemSelected: _onItemTapped,
       ),
     );
   }

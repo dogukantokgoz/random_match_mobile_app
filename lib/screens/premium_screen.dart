@@ -43,8 +43,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
     required int totalItems,
   }) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.7,
-      margin: const EdgeInsets.symmetric(horizontal: 12),
+      width: MediaQuery.of(context).size.width * 0.75,
+      margin: const EdgeInsets.symmetric(horizontal: 20),
       child: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
@@ -79,8 +79,8 @@ class _PremiumScreenState extends State<PremiumScreen> {
                       child: Text(
                         title,
                         textAlign: TextAlign.center,
-                        style: TextStyle(
-                          color: widget.selectedColor,
+                        style: const TextStyle(
+                          color: Colors.black87,
                           fontSize: 18,
                           fontWeight: FontWeight.bold,
                         ),
@@ -239,39 +239,42 @@ class _PremiumScreenState extends State<PremiumScreen> {
           constraints: BoxConstraints(
             maxHeight: MediaQuery.of(context).size.height * 0.6,
           ),
-          child: PageView.builder(
-            controller: _pageController,
-            padEnds: false,
-            itemCount: 3,
-            itemBuilder: (context, index) {
-              return _buildPremiumPackage(
-                context,
-                title: 'Premium ${index + 1}',
-                features: index == 0 ? [
-                  'Özel profil rozeti',
-                  'Reklamsız deneyim',
-                  'Özel mesaj bildirimleri',
-                  'Öncelikli destek',
-                  'Özel temalar',
-                ] : index == 1 ? [
-                  'Premium 1\'in tüm özellikleri',
-                  'Sınırsız mesajlaşma',
-                  'Özel emoji paketi',
-                  'Profil istatistikleri',
-                  'Gelişmiş arama filtreleri',
-                ] : [
-                  'Premium 2\'nin tüm özellikleri',
-                  'VIP müşteri desteği',
-                  'Özel etkinlik davetiyeleri',
-                  'Profil özelleştirme',
-                  'Beta özelliklere erken erişim',
-                ],
-                price: index == 0 ? '₺49.99' : index == 1 ? '₺79.99' : '₺129.99',
-                oldPrice: index == 0 ? '₺99.99' : index == 1 ? '₺159.99' : '₺259.99',
-                index: index,
-                totalItems: 3,
-              );
-            },
+          child: Container(
+            padding: const EdgeInsets.symmetric(horizontal: 20),
+            child: PageView.builder(
+              controller: _pageController,
+              padEnds: true,
+              itemCount: 3,
+              itemBuilder: (context, index) {
+                return _buildPremiumPackage(
+                  context,
+                  title: 'Premium ${index + 1}',
+                  features: index == 0 ? [
+                    'Özel profil rozeti',
+                    'Reklamsız deneyim',
+                    'Özel mesaj bildirimleri',
+                    'Öncelikli destek',
+                    'Özel temalar',
+                  ] : index == 1 ? [
+                    'Premium 1\'in tüm özellikleri',
+                    'Sınırsız mesajlaşma',
+                    'Özel emoji paketi',
+                    'Profil istatistikleri',
+                    'Gelişmiş arama filtreleri',
+                  ] : [
+                    'Premium 2\'nin tüm özellikleri',
+                    'VIP müşteri desteği',
+                    'Özel etkinlik davetiyeleri',
+                    'Profil özelleştirme',
+                    'Beta özelliklere erken erişim',
+                  ],
+                  price: index == 0 ? '₺49.99' : index == 1 ? '₺79.99' : '₺129.99',
+                  oldPrice: index == 0 ? '₺99.99' : index == 1 ? '₺159.99' : '₺259.99',
+                  index: index,
+                  totalItems: 3,
+                );
+              },
+            ),
           ),
         ),
       ),

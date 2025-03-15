@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
+import '../components/bottom_nav_bar.dart';
 import 'messages_screen.dart';
 import 'buy_gold_screen.dart';
+import 'call_screen.dart';
+import 'notifications_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
   final String selectedMainCategory;
@@ -102,7 +105,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildCategoryButton(String title, IconData icon, int count, bool isSelected) {
+  Widget _buildCategoryButton(String title, IconData icon, bool isSelected) {
     return GestureDetector(
       onTap: () {
         setState(() {
@@ -111,7 +114,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
       },
       child: Container(
         width: 120,
-        padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 12),
+        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
         decoration: BoxDecoration(
           color: Colors.white,
           borderRadius: BorderRadius.circular(12),
@@ -129,45 +132,42 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ),
           ],
         ),
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(
-                  icon,
-                  size: 18,
-                  color: isSelected ? currentCategoryColor : Colors.grey[700],
-                ),
-                const SizedBox(width: 6),
-                Text(
-                  title,
-                  style: TextStyle(
-                    color: isSelected ? currentCategoryColor : Colors.grey[800],
-                    fontSize: 13,
-                    fontWeight: FontWeight.w500,
-                  ),
-                ),
-              ],
+            Icon(
+              icon,
+              size: 18,
+              color: isSelected ? currentCategoryColor : Colors.grey[700],
             ),
-            const SizedBox(height: 4),
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
-              decoration: BoxDecoration(
-                color: isSelected ? currentCategoryColor.withOpacity(0.1) : Colors.grey[100],
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Text(
-                count.toString(),
-                style: TextStyle(
-                  color: isSelected ? currentCategoryColor : Colors.grey[600],
-                  fontSize: 12,
-                  fontWeight: FontWeight.w600,
-                ),
+            const SizedBox(width: 6),
+            Text(
+              title,
+              style: TextStyle(
+                color: isSelected ? currentCategoryColor : Colors.grey[800],
+                fontSize: 13,
+                fontWeight: FontWeight.w500,
               ),
             ),
           ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildCategoryCount(int count) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+      decoration: BoxDecoration(
+        color: currentCategoryColor.withOpacity(0.1),
+        borderRadius: BorderRadius.circular(12),
+      ),
+      child: Text(
+        '$count kişi',
+        style: TextStyle(
+          color: currentCategoryColor,
+          fontSize: 13,
+          fontWeight: FontWeight.w600,
         ),
       ),
     );
@@ -288,6 +288,105 @@ class _ProfileScreenState extends State<ProfileScreen> {
         reverseTransitionDuration: const Duration(milliseconds: 150),
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+    
+    if (index == 2) {
+      // Messages icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
+    } else if (index == 1) {
+      // Call icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
+            selectedCategory: widget.selectedMainCategory,
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
+    } else if (index == 0) {
+      // Notifications icon tapped
+      Navigator.pushReplacement(
+        context,
+        PageRouteBuilder(
+          pageBuilder: (context, animation, secondaryAnimation) => NotificationsScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+            selectedIndex: 0,
+            onItemSelected: (index) {},
+          ),
+          transitionsBuilder: (context, animation, secondaryAnimation, child) {
+            const begin = Offset(0.0, 0.03);
+            const end = Offset.zero;
+            const curve = Curves.easeOut;
+
+            var tween = Tween(begin: begin, end: end).chain(
+              CurveTween(curve: curve),
+            );
+
+            return SlideTransition(
+              position: animation.drive(tween),
+              child: FadeTransition(
+                opacity: animation,
+                child: child,
+              ),
+            );
+          },
+          transitionDuration: const Duration(milliseconds: 150),
+          reverseTransitionDuration: const Duration(milliseconds: 150),
+        ),
+      );
+    }
   }
 
   @override
@@ -430,7 +529,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                     const SizedBox(height: 4),
                     _buildStatItem(Icons.favorite, '128', currentColor),
                     const SizedBox(height: 4),
-                    _buildStatItem(Icons.monetization_on, '50', Colors.amber),
+                    _buildStatItem(Icons.monetization_on, '${widget.currentGold}', Colors.amber),
                   ],
                 ),
               ],
@@ -442,105 +541,30 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    _buildCategoryButton('Arkadaşlar', Icons.people, currentItems.length, _selectedCategory == 'Arkadaşlar'),
+                    _buildCategoryButton('Arkadaşlar', Icons.people, _selectedCategory == 'Arkadaşlar'),
                     const SizedBox(width: 8),
-                    _buildCategoryButton('İstekler', Icons.person_add, (categoryData['İstekler']!['items'] as List).length, _selectedCategory == 'İstekler'),
+                    _buildCategoryButton('İstekler', Icons.person_add, _selectedCategory == 'İstekler'),
                     const SizedBox(width: 8),
-                    _buildCategoryButton('Sildiklerim', Icons.person_remove, (categoryData['Sildiklerim']!['items'] as List).length, _selectedCategory == 'Sildiklerim'),
+                    _buildCategoryButton('Sildiklerim', Icons.person_remove, _selectedCategory == 'Sildiklerim'),
                   ],
                 ),
               ),
             ),
-            const SizedBox(height: 24),
+            const SizedBox(height: 16),
+            Align(
+              alignment: Alignment.centerRight,
+              child: _buildCategoryCount(currentItems.length),
+            ),
+            const SizedBox(height: 16),
             ...currentItems.map((item) => _buildFriendItem(item['name']!, item['status']!)).toList(),
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        margin: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(25),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.1),
-              blurRadius: 10,
-              spreadRadius: 0,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceAround,
-            children: [
-              _buildNavItem(Icons.notifications, 0, _selectedIndex == 0),
-              _buildNavItem(Icons.call, 1, _selectedIndex == 1),
-              _buildNavItem(Icons.message, 2, _selectedIndex == 2),
-              _buildNavItem(Icons.person, 3, _selectedIndex == 3),
-            ],
-          ),
-        ),
+      bottomNavigationBar: BottomNavBar(
+        selectedIndex: _selectedIndex,
+        selectedColor: widget.selectedColor,
+        onItemSelected: _onItemTapped,
       ),
     );
-  }
-
-  Widget _buildNavItem(IconData icon, int index, bool isSelected) {
-    return GestureDetector(
-      onTap: () => _onItemTapped(index),
-      child: Container(
-        padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
-        decoration: BoxDecoration(
-          color: isSelected ? currentCategoryColor : Colors.transparent,
-          borderRadius: BorderRadius.circular(20),
-        ),
-        child: Icon(
-          icon,
-          color: isSelected ? Colors.white : Colors.grey[600],
-          size: 28,
-        ),
-      ),
-    );
-  }
-
-  void _onItemTapped(int index) {
-    if (index == 2) {
-      // Messages icon tapped
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
-            selectedMainCategory: widget.selectedMainCategory,
-            selectedColor: widget.selectedColor,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
-        ),
-      );
-    } else if (index == 1) {
-      // Call icon tapped - return to call screen
-      Navigator.pop(context);
-    } else if (index == 0) {
-      // Notifications icon tapped
-      Navigator.pop(context);
-    }
   }
 } 

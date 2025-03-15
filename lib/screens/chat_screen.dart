@@ -1,15 +1,19 @@
 import 'package:flutter/material.dart';
+import 'messages_screen.dart';
+import 'buy_gold_screen.dart';
 
 class ChatScreen extends StatefulWidget {
   final String selectedMainCategory;
   final MaterialColor selectedColor;
   final Map<String, dynamic> user;
+  final int currentGold;
 
   const ChatScreen({
     super.key,
     required this.selectedMainCategory,
     required this.selectedColor,
     required this.user,
+    this.currentGold = 0,
   });
 
   @override
@@ -125,6 +129,70 @@ class _ChatScreenState extends State<ChatScreen> {
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  Widget _buildCoinIcon({double size = 20, Color color = Colors.amber}) {
+    return Container(
+      width: size,
+      height: size,
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        gradient: LinearGradient(
+          begin: Alignment.topLeft,
+          end: Alignment.bottomRight,
+          colors: [
+            color,
+            color.withOpacity(0.8),
+          ],
+        ),
+        boxShadow: [
+          BoxShadow(
+            color: color.withOpacity(0.3),
+            blurRadius: 4,
+            offset: const Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Center(
+        child: Icon(
+          Icons.eco,
+          size: size * 0.6,
+          color: Colors.yellow[100],
+        ),
+      ),
+    );
+  }
+
+  void _navigateToBuyGold() {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => BuyGoldScreen(
+          selectedMainCategory: widget.selectedMainCategory,
+          selectedColor: widget.selectedColor,
+          currentGold: widget.currentGold,
+        ),
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.03);
+          const end = Offset.zero;
+          const curve = Curves.easeOut;
+
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 150),
+        reverseTransitionDuration: const Duration(milliseconds: 150),
       ),
     );
   }
@@ -340,36 +408,7 @@ class _ChatScreenState extends State<ChatScreen> {
                       ],
                       onSelected: (String value) {
                         if (value == 'buy_gold') {
-                          showDialog(
-                            context: context,
-                            builder: (context) => AlertDialog(
-                              title: const Text('Altın Satın Al'),
-                              content: const Text('Altın satın alma sayfasına yönlendirileceksiniz. Devam etmek istiyor musunuz?'),
-                              actions: [
-                                TextButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text(
-                                    'İptal',
-                                    style: TextStyle(
-                                      color: Colors.grey[600],
-                                    ),
-                                  ),
-                                ),
-                                TextButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                    // Altın satın alma sayfasına yönlendirme
-                                  },
-                                  child: Text(
-                                    'Devam Et',
-                                    style: TextStyle(
-                                      color: Colors.amber[700],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          );
+                          _navigateToBuyGold();
                         } else if (value == 'gold') {
                           showDialog(
                             context: context,
@@ -537,14 +576,10 @@ class _ChatScreenState extends State<ChatScreen> {
                       padding: const EdgeInsets.symmetric(horizontal: 12),
                       child: Row(
                         children: [
-                          Icon(
-                            Icons.workspace_premium,
-                            color: Colors.amber[700],
-                            size: 20,
-                          ),
+                          _buildCoinIcon(size: 20),
                           const SizedBox(width: 4),
                           Text(
-                            '50', // Mevcut altın miktarı
+                            '${widget.currentGold}',
                             style: TextStyle(
                               color: Colors.amber[700],
                               fontWeight: FontWeight.bold,
@@ -588,36 +623,7 @@ class _ChatScreenState extends State<ChatScreen> {
                     ],
                     onSelected: (String value) {
                       if (value == 'buy_gold') {
-                        showDialog(
-                          context: context,
-                          builder: (context) => AlertDialog(
-                            title: const Text('Altın Satın Al'),
-                            content: const Text('Altın satın alma sayfasına yönlendirileceksiniz. Devam etmek istiyor musunuz?'),
-                            actions: [
-                              TextButton(
-                                onPressed: () => Navigator.pop(context),
-                                child: Text(
-                                  'İptal',
-                                  style: TextStyle(
-                                    color: Colors.grey[600],
-                                  ),
-                                ),
-                              ),
-                              TextButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                  // Altın satın alma sayfasına yönlendirme
-                                },
-                                child: Text(
-                                  'Devam Et',
-                                  style: TextStyle(
-                                    color: Colors.amber[700],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        );
+                        _navigateToBuyGold();
                       } else if (value == 'send_gold') {
                         showDialog(
                           context: context,
