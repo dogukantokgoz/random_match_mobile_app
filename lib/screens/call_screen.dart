@@ -5,6 +5,7 @@ import 'messages_screen.dart';
 import 'buy_gold_screen.dart';
 import 'notifications_screen.dart';
 import '../components/bottom_nav_bar.dart';
+import 'match_screen.dart';
 
 class CallScreen extends StatefulWidget {
   final int currentGold;
@@ -618,6 +619,77 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           },
                         ),
                       ],
+                    ),
+                  ),
+
+                  // Test Button
+                  Positioned(
+                    bottom: 100,
+                    left: 0,
+                    right: 0,
+                    child: Center(
+                      child: Material(
+                        color: Colors.transparent,
+                        child: InkWell(
+                          borderRadius: BorderRadius.circular(25),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              PageRouteBuilder(
+                                pageBuilder: (context, animation, secondaryAnimation) => MatchScreen(
+                                  selectedMainCategory: _selectedCategory,
+                                  selectedColor: currentCategoryColor,
+                                  user: {
+                                    'name': 'Test User',
+                                    'level': 5,
+                                    'likes': 128,
+                                    'status': 'online',
+                                    'bio': 'Hello! I love music and traveling. Looking for new friends to chat with!',
+                                  },
+                                ),
+                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                  const begin = Offset(0.0, 0.03);
+                                  const end = Offset.zero;
+                                  const curve = Curves.easeOut;
+
+                                  var tween = Tween(begin: begin, end: end).chain(
+                                    CurveTween(curve: curve),
+                                  );
+
+                                  return SlideTransition(
+                                    position: animation.drive(tween),
+                                    child: FadeTransition(
+                                      opacity: animation,
+                                      child: child,
+                                    ),
+                                  );
+                                },
+                                transitionDuration: const Duration(milliseconds: 150),
+                                reverseTransitionDuration: const Duration(milliseconds: 150),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+                            decoration: BoxDecoration(
+                              color: Colors.white.withOpacity(0.15),
+                              borderRadius: BorderRadius.circular(25),
+                              border: Border.all(
+                                color: Colors.white.withOpacity(0.2),
+                                width: 1,
+                              ),
+                            ),
+                            child: const Text(
+                              'Test Match Screen',
+                              style: TextStyle(
+                                color: Colors.white,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
