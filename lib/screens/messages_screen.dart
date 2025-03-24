@@ -302,7 +302,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                         width: 46,
                         height: 46,
                         child: const Icon(
-                          Icons.search,
+                          Icons.phone,
                           color: Colors.white,
                           size: 24,
                         ),
