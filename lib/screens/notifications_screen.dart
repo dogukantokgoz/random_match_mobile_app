@@ -177,40 +177,93 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
             padding: const EdgeInsets.all(16),
             child: Row(
               children: [
-                ProfileAvatarCard(
-                  name: notification['user']['name'],
-                  level: notification['user']['level'],
-                  likes: notification['user']['likes'],
-                  themeColor: widget.selectedColor,
-                  showEditButton: false,
-                  size: 50,
-                  status: notification['user']['status'],
-                  showStats: false,
-                  showShadow: false,
-                  borderRadius: 25,
-                  borderWidth: 2,
-                  backgroundColor: notification['read'] ? Colors.white : widget.selectedColor.withOpacity(0.1),
+                Stack(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            widget.selectedColor[400]!,
+                            widget.selectedColor[600]!,
+                          ],
+                        ),
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.selectedColor.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        size: 26,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: notification['user']['status'].toLowerCase() == 'online'
+                              ? Colors.green[400]
+                              : notification['user']['status'].toLowerCase() == 'away'
+                                  ? Colors.orange[400]
+                                  : Colors.grey[400],
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 16),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Row(
                         children: [
-                          Text(
-                            notification['user']['name'],
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
+                          Flexible(
+                            child: Text(
+                              notification['user']['name'],
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
+                              ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ),
                           const SizedBox(width: 4),
                           Text(
                             'seni dürttü',
                             style: TextStyle(
+                              fontSize: 14,
                               color: Colors.grey[600],
-                              fontSize: 16,
                             ),
                           ),
                         ],
@@ -219,8 +272,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       Text(
                         notification['time'],
                         style: TextStyle(
+                          fontSize: 12,
                           color: Colors.grey[600],
-                          fontSize: 14,
                         ),
                       ),
                     ],
@@ -273,7 +326,98 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: const BorderRadius.horizontal(left: Radius.circular(25)),
-                      onTap: () => Navigator.pop(context),
+                      onTap: () {
+                        if (widget.selectedIndex == 1) {
+                          // Call Screen'e dön
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
+                                selectedCategory: widget.selectedMainCategory,
+                              ),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                const begin = Offset(0.0, 0.03);
+                                const end = Offset.zero;
+                                const curve = Curves.easeOut;
+
+                                var tween = Tween(begin: begin, end: end).chain(
+                                  CurveTween(curve: curve),
+                                );
+
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              transitionDuration: const Duration(milliseconds: 150),
+                              reverseTransitionDuration: const Duration(milliseconds: 150),
+                            ),
+                          );
+                        } else if (widget.selectedIndex == 2) {
+                          // Messages Screen'e dön
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
+                                selectedMainCategory: widget.selectedMainCategory,
+                                selectedColor: widget.selectedColor,
+                              ),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                const begin = Offset(0.0, 0.03);
+                                const end = Offset.zero;
+                                const curve = Curves.easeOut;
+
+                                var tween = Tween(begin: begin, end: end).chain(
+                                  CurveTween(curve: curve),
+                                );
+
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              transitionDuration: const Duration(milliseconds: 150),
+                              reverseTransitionDuration: const Duration(milliseconds: 150),
+                            ),
+                          );
+                        } else if (widget.selectedIndex == 3) {
+                          // Profile Screen'e dön
+                          Navigator.pushReplacement(
+                            context,
+                            PageRouteBuilder(
+                              pageBuilder: (context, animation, secondaryAnimation) => ProfileScreen(
+                                selectedMainCategory: widget.selectedMainCategory,
+                                selectedColor: widget.selectedColor,
+                              ),
+                              transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                                const begin = Offset(0.0, 0.03);
+                                const end = Offset.zero;
+                                const curve = Curves.easeOut;
+
+                                var tween = Tween(begin: begin, end: end).chain(
+                                  CurveTween(curve: curve),
+                                );
+
+                                return SlideTransition(
+                                  position: animation.drive(tween),
+                                  child: FadeTransition(
+                                    opacity: animation,
+                                    child: child,
+                                  ),
+                                );
+                              },
+                              transitionDuration: const Duration(milliseconds: 150),
+                              reverseTransitionDuration: const Duration(milliseconds: 150),
+                            ),
+                          );
+                        }
+                      },
                       child: Container(
                         width: 46,
                         height: 46,
@@ -297,7 +441,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
         itemBuilder: (context, index) => _buildNotificationItem(notifications[index]),
       ),
       bottomNavigationBar: BottomNavBar(
-        selectedIndex: _selectedIndex,
+        selectedIndex: widget.selectedIndex,
         selectedColor: widget.selectedColor,
         onItemSelected: _onItemTapped,
       ),
