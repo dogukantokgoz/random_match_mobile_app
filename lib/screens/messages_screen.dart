@@ -270,7 +270,33 @@ class _MessagesScreenState extends State<MessagesScreen> {
                     child: InkWell(
                       borderRadius: const BorderRadius.horizontal(right: Radius.circular(25)),
                       onTap: () {
-                        Navigator.pop(context);
+                        Navigator.pushReplacement(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
+                              selectedCategory: widget.selectedMainCategory,
+                            ),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(0.0, 0.03);
+                              const end = Offset.zero;
+                              const curve = Curves.easeOut;
+
+                              var tween = Tween(begin: begin, end: end).chain(
+                                CurveTween(curve: curve),
+                              );
+
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              );
+                            },
+                            transitionDuration: const Duration(milliseconds: 150),
+                            reverseTransitionDuration: const Duration(milliseconds: 150),
+                          ),
+                        );
                       },
                       child: Container(
                         width: 46,
