@@ -415,18 +415,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
-                        status,
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: status.toLowerCase() == 'online'
-                              ? Colors.green[600]
-                              : status.toLowerCase() == 'away'
-                                  ? Colors.orange[600]
-                                  : Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
                         bio,
                         style: TextStyle(
                           fontSize: 12,
@@ -884,17 +872,21 @@ class _ProfileScreenState extends State<ProfileScreen> {
                             Text(
                               username,
                               style: const TextStyle(
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w500,
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Online',
+                              bio,
                               style: TextStyle(
-                                fontSize: 13,
+                                fontSize: 12,
                                 color: Colors.grey[600],
                               ),
+                              maxLines: 1,
+                              overflow: TextOverflow.ellipsis,
                             ),
                           ],
                         ),
