@@ -30,18 +30,18 @@ class _ProfileScreenState extends State<ProfileScreen> {
   
   final Map<String, Map<String, dynamic>> categoryData = {
     'Arkadaşlar': {'color': Colors.blue, 'icon': Icons.people, 'items': [
-      {'name': 'John Doe', 'status': 'Online', 'level': 5, 'likes': 128},
-      {'name': 'Jane Smith', 'status': 'Offline', 'level': 3, 'likes': 64},
-      {'name': 'Mike Johnson', 'status': 'Away', 'level': 7, 'likes': 256},
+      {'name': 'John Doe', 'status': 'Online', 'level': 5, 'likes': 128, 'bio': 'Hey there! I\'m using Random Match'},
+      {'name': 'Jane Smith', 'status': 'Offline', 'level': 3, 'likes': 64, 'bio': 'Life is beautiful'},
+      {'name': 'Mike Johnson', 'status': 'Away', 'level': 7, 'likes': 256, 'bio': 'Music lover 🎵'},
     ]},
     'İstekler': {'color': Colors.green, 'icon': Icons.person_add, 'items': [
-      {'name': 'Alice Brown', 'status': 'Online', 'level': 4, 'likes': 96},
-      {'name': 'Bob Wilson', 'status': 'Away', 'level': 6, 'likes': 158},
-      {'name': 'Carol White', 'status': 'Online', 'level': 2, 'likes': 42},
+      {'name': 'Alice Brown', 'status': 'Online', 'level': 4, 'likes': 96, 'bio': 'Adventure seeker'},
+      {'name': 'Bob Wilson', 'status': 'Away', 'level': 6, 'likes': 158, 'bio': 'Sports enthusiast ⚽'},
+      {'name': 'Carol White', 'status': 'Online', 'level': 2, 'likes': 42, 'bio': 'Art & Design'},
     ]},
     'Sildiklerim': {'color': Colors.red, 'icon': Icons.person_remove, 'items': [
-      {'name': 'David Lee', 'status': 'Offline', 'level': 8, 'likes': 312},
-      {'name': 'Emma Davis', 'status': 'Offline', 'level': 5, 'likes': 145},
+      {'name': 'David Lee', 'status': 'Offline', 'level': 8, 'likes': 312, 'bio': 'Gamer 🎮'},
+      {'name': 'Emma Davis', 'status': 'Offline', 'level': 5, 'likes': 145, 'bio': 'Travel lover ✈️'},
     ]},
   };
 
@@ -227,7 +227,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
             final RenderBox button = context.findRenderObject() as RenderBox;
             final Offset position = button.localToGlobal(Offset.zero);
             final Size size = button.size;
-
+            
             showMenu(
               context: context,
               position: RelativeRect.fromLTRB(
@@ -332,37 +332,67 @@ class _ProfileScreenState extends State<ProfileScreen> {
             padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Row(
               children: [
-                // Profile Picture
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    shape: BoxShape.circle,
-                    gradient: LinearGradient(
-                      begin: Alignment.topLeft,
-                      end: Alignment.bottomRight,
-                      colors: [
-                        currentCategoryColor[400]!,
-                        currentCategoryColor[600]!,
-                      ],
-                    ),
-                    border: Border.all(
-                      color: Colors.white,
-                      width: 2,
-                    ),
-                    boxShadow: [
-                      BoxShadow(
-                        color: currentCategoryColor.withOpacity(0.2),
-                        blurRadius: 8,
-                        offset: const Offset(0, 2),
+                Stack(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            currentCategoryColor[400]!,
+                            currentCategoryColor[600]!,
+                          ],
+                        ),
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: currentCategoryColor.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                  child: const Icon(
-                    Icons.person,
-                    size: 26,
-                    color: Colors.white,
-                  ),
+                      child: const Icon(
+                        Icons.person,
+                        size: 26,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: status.toLowerCase() == 'online'
+                              ? Colors.green[400]
+                              : status.toLowerCase() == 'away'
+                                  ? Colors.orange[400]
+                                  : Colors.grey[400],
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 10),
                 Expanded(
@@ -384,10 +414,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         status,
                         style: TextStyle(
                           fontSize: 12,
-                          color: Colors.grey[600],
+                          color: status.toLowerCase() == 'online'
+                              ? Colors.green[600]
+                              : status.toLowerCase() == 'away'
+                                  ? Colors.orange[600]
+                                  : Colors.grey[600],
                         ),
-                        maxLines: 1,
-                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
@@ -932,12 +964,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
               child: _buildCategoryCount(currentItems.length),
             ),
             const SizedBox(height: 16),
-            ...currentItems.map((item) => _buildFriendItem(
-              item['name']!, 
-              item['status']!,
-              item['level'] as int,
-              item['likes'] as int,
-            )).toList(),
+            ...currentItems.map((item) => _buildFriendItem(item['name'], item['status'], item['level'], item['likes'])).toList(),
             const SizedBox(height: 16),
           ],
         ),
