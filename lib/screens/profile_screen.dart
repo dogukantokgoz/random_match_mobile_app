@@ -186,7 +186,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
 
   Widget _buildActionButton(IconData icon, VoidCallback onPressed) {
     return Container(
-      margin: const EdgeInsets.symmetric(horizontal: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: Colors.grey[100],
@@ -195,14 +195,19 @@ class _ProfileScreenState extends State<ProfileScreen> {
         icon: Icon(icon),
         onPressed: onPressed,
         color: Colors.black87,
-        iconSize: 20,
+        iconSize: 18,
+        padding: const EdgeInsets.all(6),
+        constraints: const BoxConstraints(
+          minWidth: 32,
+          minHeight: 32,
+        ),
       ),
     );
   }
 
   Widget _buildFriendItem(String name, String status, int level, int likes) {
     return Container(
-      margin: const EdgeInsets.only(bottom: 12),
+      margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
         color: Colors.white,
         borderRadius: BorderRadius.circular(12),
@@ -218,50 +223,157 @@ class _ProfileScreenState extends State<ProfileScreen> {
         color: Colors.transparent,
         child: InkWell(
           borderRadius: BorderRadius.circular(12),
-          onTap: () {},
+          onTapUp: (details) {
+            final RenderBox button = context.findRenderObject() as RenderBox;
+            final Offset position = button.localToGlobal(Offset.zero);
+            final Size size = button.size;
+
+            showMenu(
+              context: context,
+              position: RelativeRect.fromLTRB(
+                position.dx + 10,
+                position.dy - 50,
+                position.dx + 140,
+                position.dy,
+              ),
+              elevation: 8,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(12),
+              ),
+              color: Colors.white,
+              items: [
+                PopupMenuItem(
+                  enabled: false,
+                  height: 40,
+                  padding: EdgeInsets.zero,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.star,
+                              size: 16,
+                              color: Colors.amber,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              level.toString(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          height: 16,
+                          width: 1,
+                          margin: const EdgeInsets.symmetric(horizontal: 12),
+                          color: Colors.grey[300],
+                        ),
+                        Row(
+                          children: [
+                            const Icon(
+                              Icons.favorite,
+                              size: 16,
+                              color: Colors.red,
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              likes.toString(),
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black87,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+            );
+          },
           child: Padding(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 8),
             child: Row(
               children: [
-                ProfileAvatarCard(
-                  name: name,
-                  level: level,
-                  likes: likes,
-                  themeColor: currentCategoryColor,
-                  showEditButton: false,
-                  size: 50,
-                  status: status,
-                  showStats: false,
-                  showShadow: false,
-                  borderRadius: 25,
-                  borderWidth: 2,
-                  backgroundColor: Colors.grey[50]!,
+                // Profile Picture
+                Container(
+                  width: 48,
+                  height: 48,
+                  decoration: BoxDecoration(
+                    shape: BoxShape.circle,
+                    gradient: LinearGradient(
+                      begin: Alignment.topLeft,
+                      end: Alignment.bottomRight,
+                      colors: [
+                        currentCategoryColor[400]!,
+                        currentCategoryColor[600]!,
+                      ],
+                    ),
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 2,
+                    ),
+                    boxShadow: [
+                      BoxShadow(
+                        color: currentCategoryColor.withOpacity(0.2),
+                        blurRadius: 8,
+                        offset: const Offset(0, 2),
+                      ),
+                    ],
+                  ),
+                  child: const Icon(
+                    Icons.person,
+                    size: 26,
+                    color: Colors.white,
+                  ),
                 ),
-                const SizedBox(width: 12),
+                const SizedBox(width: 10),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         name,
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 2),
                       Text(
                         status,
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.grey[600],
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
                 ),
-                _buildActionButton(Icons.call, () {}),
-                _buildActionButton(Icons.message, () {}),
-                _buildActionButton(Icons.notifications, () {}),
+                const SizedBox(width: 4),
+                Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    _buildActionButton(Icons.call, () {}),
+                    _buildActionButton(Icons.message, () {}),
+                    _buildActionButton(Icons.notifications, () {}),
+                  ],
+                ),
               ],
             ),
           ),
