@@ -155,36 +155,101 @@ class _MessagesScreenState extends State<MessagesScreen> {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                ProfileAvatarCard(
-                  name: message['name'],
-                  level: message['level'],
-                  likes: message['likes'],
-                  themeColor: widget.selectedColor,
-                  showEditButton: false,
-                  size: 50,
-                  status: message['status'],
-                  showStats: false,
-                  showShadow: false,
-                  borderRadius: 25,
-                  borderWidth: 2,
-                  backgroundColor: Colors.grey[50]!,
+                // Profile Picture
+                Stack(
+                  children: [
+                    Container(
+                      width: 48,
+                      height: 48,
+                      decoration: BoxDecoration(
+                        shape: BoxShape.circle,
+                        gradient: LinearGradient(
+                          begin: Alignment.topLeft,
+                          end: Alignment.bottomRight,
+                          colors: [
+                            widget.selectedColor[400]!,
+                            widget.selectedColor[600]!,
+                          ],
+                        ),
+                        border: Border.all(
+                          color: Colors.white,
+                          width: 2,
+                        ),
+                        boxShadow: [
+                          BoxShadow(
+                            color: widget.selectedColor.withOpacity(0.2),
+                            blurRadius: 8,
+                            offset: const Offset(0, 2),
+                          ),
+                        ],
+                      ),
+                      child: const Icon(
+                        Icons.person,
+                        size: 26,
+                        color: Colors.white,
+                      ),
+                    ),
+                    Positioned(
+                      right: 0,
+                      bottom: 0,
+                      child: Container(
+                        width: 14,
+                        height: 14,
+                        decoration: BoxDecoration(
+                          shape: BoxShape.circle,
+                          color: message['status'].toLowerCase() == 'online' 
+                              ? Colors.green[400]
+                              : message['status'].toLowerCase() == 'away' 
+                                  ? Colors.orange[400]
+                                  : Colors.grey[400],
+                          border: Border.all(
+                            color: Colors.white,
+                            width: 2,
+                          ),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.1),
+                              blurRadius: 4,
+                              offset: const Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
                 const SizedBox(width: 12),
                 Expanded(
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       Text(
                         message['name'],
                         style: const TextStyle(
-                          fontSize: 16,
+                          fontSize: 14,
                           fontWeight: FontWeight.w500,
                         ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 2),
+                      Text(
+                        message['status'],
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: message['status'].toLowerCase() == 'online'
+                              ? Colors.green[600]
+                              : message['status'].toLowerCase() == 'away'
+                                  ? Colors.orange[600]
+                                  : Colors.grey[600],
+                        ),
+                      ),
+                      const SizedBox(height: 2),
                       Text(
                         message['lastMessage'],
                         style: TextStyle(
-                          fontSize: 14,
+                          fontSize: 12,
                           color: Colors.grey[600],
                         ),
                         maxLines: 1,
