@@ -206,6 +206,10 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildFriendItem(String name, String status, int level, int likes) {
+    final currentItems = (categoryData[_selectedCategory]!['items'] as List<dynamic>).cast<Map<String, dynamic>>();
+    final userItem = currentItems.firstWhere((item) => item['name'] == name);
+    final String bio = userItem['bio'];
+
     return Container(
       margin: const EdgeInsets.only(bottom: 10),
       decoration: BoxDecoration(
@@ -420,6 +424,16 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                   ? Colors.orange[600]
                                   : Colors.grey[600],
                         ),
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
+                        bio,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
                       ),
                     ],
                   ),
