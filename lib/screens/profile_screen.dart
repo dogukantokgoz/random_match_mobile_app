@@ -423,6 +423,20 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
                       ),
+                      const SizedBox(height: 2),
+                      Text(
+                        status,
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: status.toLowerCase() == 'online'
+                              ? Colors.green[600]
+                              : status.toLowerCase() == 'away'
+                                  ? Colors.orange[600]
+                                  : Colors.grey[600],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
                     ],
                   ),
                 ),
@@ -430,9 +444,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _buildActionButton(Icons.call, () {}),
-                    _buildActionButton(Icons.message, () {}),
-                    _buildActionButton(Icons.notifications, () {}),
+                _buildActionButton(Icons.call, () {}),
+                _buildActionButton(Icons.message, () {}),
+                _buildActionButton(Icons.notifications, () {}),
                   ],
                 ),
               ],
@@ -879,11 +893,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
                               overflow: TextOverflow.ellipsis,
                             ),
                             const SizedBox(height: 2),
-                            Text(
+                      Text(
                               bio,
-                              style: TextStyle(
+                        style: TextStyle(
                                 fontSize: 12,
-                                color: Colors.grey[600],
+                          color: Colors.grey[600],
                               ),
                               maxLines: 1,
                               overflow: TextOverflow.ellipsis,
@@ -907,9 +921,9 @@ class _ProfileScreenState extends State<ProfileScreen> {
                                 ),
                               ),
                             ),
-                          ),
                         ),
-                      ],
+                      ),
+                    ],
                     ),
                   ),
                 ),

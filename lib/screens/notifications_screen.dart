@@ -249,8 +249,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         children: [
                           Flexible(
                             child: Text(
-                              notification['user']['name'],
-                              style: const TextStyle(
+                            notification['user']['name'],
+                            style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),

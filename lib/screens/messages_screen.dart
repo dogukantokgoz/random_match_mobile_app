@@ -235,6 +235,16 @@ class _MessagesScreenState extends State<MessagesScreen> {
                       ),
                       const SizedBox(height: 2),
                       Text(
+                        message['lastMessage'],
+                        style: TextStyle(
+                          fontSize: 12,
+                          color: Colors.grey[600],
+                        ),
+                        maxLines: 1,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      const SizedBox(height: 2),
+                      Text(
                         message['status'],
                         style: TextStyle(
                           fontSize: 12,
@@ -243,14 +253,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
                               : message['status'].toLowerCase() == 'away'
                                   ? Colors.orange[600]
                                   : Colors.grey[600],
-                        ),
-                      ),
-                      const SizedBox(height: 2),
-                      Text(
-                        message['lastMessage'],
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
