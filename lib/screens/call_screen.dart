@@ -9,6 +9,8 @@ import 'match_screen.dart';
 import 'chat_screen.dart';
 import 'end_match_screen.dart';
 import 'call_status_screen.dart';
+import '../components/call_request_widget.dart';
+import '../components/outgoing_call_widget.dart';
 
 class CallScreen extends StatefulWidget {
   final int currentGold;
@@ -33,6 +35,8 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
   late AnimationController _animationController3;
   late AnimationController _textAnimationController;
   late Animation<double> _textSlideAnimation;
+  bool _showCallRequest = false;
+  bool _showOutgoingCall = false;
   
   final Map<String, dynamic> categoryData = {
     'Genel': {'color': Colors.blue, 'icon': Icons.public},
@@ -810,6 +814,68 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                             ),
                           ),
                         ),
+                        const SizedBox(height: 8),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(15),
+                            onTap: () {
+                              setState(() {
+                                _showCallRequest = true;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.2),
+                                  width: 1,
+                                ),
+                              ),
+                              child: const Text(
+                                'Test Gelen Arama',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(15),
+                            onTap: () {
+                              setState(() {
+                                _showOutgoingCall = true;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.2),
+                                  width: 1,
+                                ),
+                              ),
+                              child: const Text(
+                                'Test Giden Arama',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
                       ],
                     ),
                   ),
@@ -817,6 +883,44 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
               ),
             ),
           ),
+          if (_showCallRequest)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: CallRequestWidget(
+                callerName: 'John Doe',
+                callerImage: 'assets/images/profile.png',
+                onAccept: () {
+                  setState(() {
+                    _showCallRequest = false;
+                  });
+                  // Arama kabul edildiğinde yapılacak işlemler
+                },
+                onReject: () {
+                  setState(() {
+                    _showCallRequest = false;
+                  });
+                  // Arama reddedildiğinde yapılacak işlemler
+                },
+              ),
+            ),
+          if (_showOutgoingCall)
+            Positioned(
+              top: 0,
+              left: 0,
+              right: 0,
+              child: OutgoingCallWidget(
+                receiverName: 'Jane Smith',
+                receiverImage: 'assets/images/profile.png',
+                onCancel: () {
+                  setState(() {
+                    _showOutgoingCall = false;
+                  });
+                  // Arama iptal edildiğinde yapılacak işlemler
+                },
+              ),
+            ),
         ],
       ),
       bottomNavigationBar: BottomNavBar(

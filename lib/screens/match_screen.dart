@@ -117,9 +117,9 @@ class _MatchScreenState extends State<MatchScreen> with SingleTickerProviderStat
   Color _getTimerColor() {
     if (_timeLeft <= 10) {
       final opacity = (10 - _timeLeft) / 10;
-      return Color.lerp(Colors.white, Colors.red, opacity)!;
+      return Color.lerp(widget.selectedColor[900], widget.selectedColor[900], opacity)!;
     }
-    return Colors.white;
+    return widget.selectedColor[900]!;
   }
 
   @override
@@ -141,23 +141,85 @@ class _MatchScreenState extends State<MatchScreen> with SingleTickerProviderStat
                   // Audio and Emoji Controls
                   Padding(
                     padding: EdgeInsets.only(right: horizontalPadding, bottom: 24),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
-                        _buildControlButton(
-                          icon: Icons.emoji_emotions_outlined,
-                          isSelected: false,
-                          onTap: _showEmojiPicker,
+                        // Gold Icon
+                        Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(20),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Container(
+                                width: 20,
+                                height: 20,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  gradient: LinearGradient(
+                                    begin: Alignment.topLeft,
+                                    end: Alignment.bottomRight,
+                                    colors: [
+                                      Colors.amber[400]!,
+                                      Colors.amber[600]!,
+                                    ],
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.amber.withOpacity(0.3),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: Center(
+                                  child: Icon(
+                                    Icons.eco,
+                                    size: 12,
+                                    color: Colors.yellow[100],
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 4),
+                              const Text(
+                                '1000',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w600,
+                                ),
+                              ),
+                            ],
+                          ),
                         ),
-                        const SizedBox(width: 8),
-                        _buildControlButton(
-                          icon: isAudioEnabled ? Icons.volume_up : Icons.volume_off,
-                          isSelected: isAudioEnabled,
-                          onTap: () {
-                            setState(() {
-                              isAudioEnabled = !isAudioEnabled;
-                            });
-                          },
+                        const SizedBox(height: 8),
+                        // Control Buttons
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            _buildControlButton(
+                              icon: Icons.emoji_emotions_outlined,
+                              isSelected: false,
+                              onTap: _showEmojiPicker,
+                            ),
+                            const SizedBox(width: 8),
+                            _buildControlButton(
+                              icon: isAudioEnabled ? Icons.volume_up : Icons.volume_up_outlined,
+                              isSelected: isAudioEnabled,
+                              onTap: () {
+                                setState(() {
+                                  isAudioEnabled = !isAudioEnabled;
+                                });
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
