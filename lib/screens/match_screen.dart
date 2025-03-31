@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../components/profile_avatar_card.dart';
 import 'dart:async';
 import 'end_match_screen.dart';
+import 'buy_gold_screen.dart';
 
 class MatchScreen extends StatefulWidget {
   final String selectedMainCategory;
@@ -145,58 +146,50 @@ class _MatchScreenState extends State<MatchScreen> with SingleTickerProviderStat
                       crossAxisAlignment: CrossAxisAlignment.end,
                       children: [
                         // Gold Icon
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.1),
-                            borderRadius: BorderRadius.circular(20),
-                            border: Border.all(
-                              color: Colors.white.withOpacity(0.2),
-                              width: 1,
+                        GestureDetector(
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => BuyGoldScreen(
+                                  selectedMainCategory: widget.selectedMainCategory,
+                                  selectedColor: widget.selectedColor,
+                                ),
+                              ),
+                            );
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 12,
+                              vertical: 6,
                             ),
-                          ),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Container(
-                                width: 20,
-                                height: 20,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  gradient: LinearGradient(
-                                    begin: Alignment.topLeft,
-                                    end: Alignment.bottomRight,
-                                    colors: [
-                                      Colors.amber[400]!,
-                                      Colors.amber[600]!,
-                                    ],
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.amber.withOpacity(0.3),
-                                      blurRadius: 4,
-                                      offset: const Offset(0, 2),
-                                    ),
-                                  ],
+                            decoration: BoxDecoration(
+                              color: Colors.amber.withOpacity(0.2),
+                              borderRadius: BorderRadius.circular(20),
+                              border: Border.all(
+                                color: Colors.amber.withOpacity(0.3),
+                                width: 1,
+                              ),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Icon(
+                                  Icons.monetization_on,
+                                  color: Colors.amber[700],
+                                  size: 20,
                                 ),
-                                child: Center(
-                                  child: Icon(
-                                    Icons.eco,
-                                    size: 12,
-                                    color: Colors.yellow[100],
+                                const SizedBox(width: 4),
+                                Text(
+                                  '1000', // Bu değer kullanıcının mevcut gold miktarı olacak
+                                  style: TextStyle(
+                                    color: Colors.amber[700],
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14,
                                   ),
                                 ),
-                              ),
-                              const SizedBox(width: 4),
-                              const Text(
-                                '1000',
-                                style: TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 14,
-                                  fontWeight: FontWeight.w600,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         const SizedBox(height: 8),
