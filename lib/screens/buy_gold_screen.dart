@@ -5,12 +5,14 @@ class BuyGoldScreen extends StatelessWidget {
   final String selectedMainCategory;
   final MaterialColor selectedColor;
   final int currentGold;
+  final int selectedIndex;
 
   const BuyGoldScreen({
     super.key,
     required this.selectedMainCategory,
     required this.selectedColor,
     this.currentGold = 0,
+    this.selectedIndex = 0,
   });
 
   Widget _buildCoinIcon({double size = 20}) {
@@ -296,7 +298,7 @@ class BuyGoldScreen extends StatelessWidget {
                                   pageBuilder: (context, animation, secondaryAnimation) => PremiumScreen(
                                     selectedMainCategory: selectedMainCategory,
                                     selectedColor: selectedColor,
-                                    currentGold: currentGold,
+                                    selectedIndex: selectedIndex,
                                   ),
                                   transitionsBuilder: (context, animation, secondaryAnimation, child) {
                                     const begin = Offset(1.0, 0.0);

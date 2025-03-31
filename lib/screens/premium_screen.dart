@@ -1,20 +1,23 @@
 import 'package:flutter/material.dart';
 import 'call_screen.dart';
+import 'profile_screen.dart';
+import 'messages_screen.dart';
+import 'notifications_screen.dart';
 
 class PremiumScreen extends StatefulWidget {
   final String selectedMainCategory;
   final MaterialColor selectedColor;
-  final int currentGold;
+  final int selectedIndex;
 
   const PremiumScreen({
     super.key,
     required this.selectedMainCategory,
     required this.selectedColor,
-    this.currentGold = 0,
+    required this.selectedIndex,
   });
 
   @override
-  State<PremiumScreen> createState() => _PremiumScreenState();
+  _PremiumScreenState createState() => _PremiumScreenState();
 }
 
 class _PremiumScreenState extends State<PremiumScreen> {
@@ -157,6 +160,51 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ],
       ),
     );
+  }
+
+  void _onItemTapped(int index) {
+    if (index == 3) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => ProfileScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+          ),
+        ),
+      );
+    } else if (index == 2) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => MessagesScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+          ),
+        ),
+      );
+    } else if (index == 1) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => CallScreen(
+            selectedCategory: widget.selectedMainCategory,
+          ),
+        ),
+      );
+    } else if (index == 0) {
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => NotificationsScreen(
+            selectedMainCategory: widget.selectedMainCategory,
+            selectedColor: widget.selectedColor,
+            selectedIndex: 0,
+            onItemSelected: (index) {},
+          ),
+        ),
+      );
+    }
   }
 
   @override
