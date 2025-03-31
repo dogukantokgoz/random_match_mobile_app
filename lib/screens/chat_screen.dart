@@ -236,7 +236,7 @@ class _ChatScreenState extends State<ChatScreen> {
                 const SizedBox(width: 8),
                 // User Info
                 Expanded(
-                  flex: 2,
+                  flex: 3,
                   child: Container(
                     height: 46,
                     padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -253,36 +253,78 @@ class _ChatScreenState extends State<ChatScreen> {
                     ),
                     child: Row(
                       children: [
-                        ProfileAvatarCard(
-                          name: widget.user['name'],
-                          level: widget.user['level'],
-                          likes: widget.user['likes'],
-                          themeColor: widget.selectedColor,
-                          showEditButton: false,
-                          size: 36,
-                          status: widget.user['status'],
-                          showStats: false,
-                          showShadow: false,
-                          borderRadius: 18,
-                          borderWidth: 2,
-                          backgroundColor: Colors.grey[50]!,
+                        Stack(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                gradient: LinearGradient(
+                                  begin: Alignment.topLeft,
+                                  end: Alignment.bottomRight,
+                                  colors: [
+                                    widget.selectedColor[400]!,
+                                    widget.selectedColor[600]!,
+                                  ],
+                                ),
+                                border: Border.all(
+                                  color: Colors.white,
+                                  width: 2,
+                                ),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: widget.selectedColor.withOpacity(0.2),
+                                    blurRadius: 8,
+                                    offset: const Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Icon(
+                                Icons.person,
+                                size: 20,
+                                color: Colors.white,
+                              ),
+                            ),
+                            Positioned(
+                              right: 0,
+                              bottom: 0,
+                              child: Container(
+                                width: 12,
+                                height: 12,
+                                decoration: BoxDecoration(
+                                  shape: BoxShape.circle,
+                                  color: widget.user['status'].toLowerCase() == 'online'
+                                      ? Colors.green[400]
+                                      : widget.user['status'].toLowerCase() == 'away'
+                                          ? Colors.orange[400]
+                                          : Colors.grey[400],
+                                  border: Border.all(
+                                    color: Colors.white,
+                                    width: 2,
+                                  ),
+                                  boxShadow: [
+                                    BoxShadow(
+                                      color: Colors.black.withOpacity(0.1),
+                                      blurRadius: 4,
+                                      offset: const Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
                         const SizedBox(width: 12),
                         Expanded(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text(
-                                widget.user['name'],
-                                style: const TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.w500,
-                                ),
-                                maxLines: 1,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                            ],
+                          child: Text(
+                            widget.user['name'],
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w500,
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
                           ),
                         ),
                       ],
@@ -295,39 +337,21 @@ class _ChatScreenState extends State<ChatScreen> {
                   width: 46,
                   height: 46,
                   decoration: BoxDecoration(
-                    color: widget.selectedColor[900]!.withOpacity(0.95),
+                    color: widget.user['status'].toLowerCase() == 'online'
+                        ? widget.selectedColor[900]!.withOpacity(0.95)
+                        : Colors.grey[400]!.withOpacity(0.95),
                     shape: BoxShape.circle,
                   ),
                   child: Material(
                     color: Colors.transparent,
                     child: InkWell(
                       borderRadius: BorderRadius.circular(23),
-                      onTap: () {},
-                      child: const Icon(
+                      onTap: widget.user['status'].toLowerCase() == 'online' ? () {} : null,
+                      child: Icon(
                         Icons.call,
-                        color: Colors.white,
-                        size: 24,
-                      ),
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                // Poke Button
-                Container(
-                  width: 46,
-                  height: 46,
-                  decoration: BoxDecoration(
-                    color: widget.selectedColor[900]!.withOpacity(0.95),
-                    shape: BoxShape.circle,
-                  ),
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: BorderRadius.circular(23),
-                      onTap: () {},
-                      child: const Icon(
-                        Icons.notifications_active,
-                        color: Colors.white,
+                        color: widget.user['status'].toLowerCase() == 'online'
+                            ? Colors.white
+                            : Colors.white.withOpacity(0.5),
                         size: 24,
                       ),
                     ),
@@ -354,6 +378,20 @@ class _ChatScreenState extends State<ChatScreen> {
                         borderRadius: BorderRadius.circular(16),
                       ),
                       itemBuilder: (BuildContext context) => [
+                        PopupMenuItem<String>(
+                          value: 'poke',
+                          child: Row(
+                            children: [
+                              Icon(
+                                Icons.notifications_active,
+                                color: widget.selectedColor[400],
+                                size: 20,
+                              ),
+                              const SizedBox(width: 8),
+                              const Text('Dürt'),
+                            ],
+                          ),
+                        ),
                         PopupMenuItem<String>(
                           value: 'buy_gold',
                           child: Row(
@@ -398,7 +436,9 @@ class _ChatScreenState extends State<ChatScreen> {
                         ),
                       ],
                       onSelected: (String value) {
-                        if (value == 'buy_gold') {
+                        if (value == 'poke') {
+                          // Dürtme işlemi
+                        } else if (value == 'buy_gold') {
                           _navigateToBuyGold();
                         } else if (value == 'gold') {
                           showDialog(
