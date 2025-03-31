@@ -117,51 +117,78 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   Widget _buildCategoryButton(String title, IconData icon, bool isSelected) {
+    final bool hasRequests = title == 'İstekler' && 
+        (categoryData['İstekler']!['items'] as List<dynamic>).isNotEmpty;
+
     return GestureDetector(
       onTap: () {
         setState(() {
           _selectedCategory = title;
         });
       },
-      child: Container(
-        width: 120,
-        padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
-          border: Border(
-            bottom: BorderSide(
-              color: isSelected ? currentCategoryColor : Colors.transparent,
-              width: 2,
+      child: Stack(
+        children: [
+          Container(
+            width: 120,
+            padding: const EdgeInsets.symmetric(vertical: 12, horizontal: 12),
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(12),
+              border: Border(
+                bottom: BorderSide(
+                  color: isSelected ? currentCategoryColor : Colors.transparent,
+                  width: 2,
+                ),
+              ),
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.black.withOpacity(0.05),
+                  blurRadius: 10,
+                  offset: const Offset(0, 2),
+                ),
+              ],
+            ),
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(
+                  icon,
+                  size: 18,
+                  color: isSelected ? currentCategoryColor : Colors.grey[700],
+                ),
+                const SizedBox(width: 6),
+                Text(
+                  title,
+                  style: TextStyle(
+                    color: isSelected ? currentCategoryColor : Colors.grey[800],
+                    fontSize: 13,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+              ],
             ),
           ),
-          boxShadow: [
-            BoxShadow(
-              color: Colors.black.withOpacity(0.05),
-              blurRadius: 10,
-              offset: const Offset(0, 2),
-            ),
-          ],
-        ),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(
-              icon,
-              size: 18,
-              color: isSelected ? currentCategoryColor : Colors.grey[700],
-            ),
-            const SizedBox(width: 6),
-            Text(
-              title,
-              style: TextStyle(
-                color: isSelected ? currentCategoryColor : Colors.grey[800],
-                fontSize: 13,
-                fontWeight: FontWeight.w500,
+          if (hasRequests)
+            Positioned(
+              right: 8,
+              top: 8,
+              child: Container(
+                width: 8,
+                height: 8,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  color: currentCategoryColor[400],
+                  boxShadow: [
+                    BoxShadow(
+                      color: currentCategoryColor[400]!.withOpacity(0.5),
+                      blurRadius: 4,
+                      spreadRadius: 1,
+                    ),
+                  ],
+                ),
               ),
             ),
-          ],
-        ),
+        ],
       ),
     );
   }
@@ -184,17 +211,17 @@ class _ProfileScreenState extends State<ProfileScreen> {
     );
   }
 
-  Widget _buildActionButton(IconData icon, VoidCallback onPressed) {
+  Widget _buildActionButton(IconData icon, VoidCallback onPressed, {bool isOnline = false}) {
     return Container(
       margin: const EdgeInsets.symmetric(horizontal: 2),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
-        color: Colors.grey[100],
+        color: isOnline ? currentCategoryColor[400] : Colors.grey[100],
       ),
       child: IconButton(
         icon: Icon(icon),
         onPressed: onPressed,
-        color: Colors.black87,
+        color: isOnline ? Colors.white : Colors.black87,
         iconSize: 18,
         padding: const EdgeInsets.all(6),
         constraints: const BoxConstraints(
@@ -444,9 +471,68 @@ class _ProfileScreenState extends State<ProfileScreen> {
                 Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                _buildActionButton(Icons.call, () {}),
-                _buildActionButton(Icons.message, () {}),
-                _buildActionButton(Icons.notifications, () {}),
+                    if (_selectedCategory == 'Arkadaşlar') ...[
+                      _buildActionButton(Icons.call, () {}, isOnline: status.toLowerCase() == 'online'),
+                      _buildActionButton(Icons.message, () {}),
+                      _buildActionButton(Icons.notifications, () {}),
+                    ] else if (_selectedCategory == 'İstekler') ...[
+                      Container(
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                        decoration: BoxDecoration(
+                          color: currentCategoryColor.withOpacity(0.1),
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Icon(
+                              Icons.check,
+                              size: 16,
+                              color: currentCategoryColor[400],
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'Kabul Et',
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: currentCategoryColor[400],
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ] else if (_selectedCategory == 'Sildiklerim') ...[
+                      GestureDetector(
+                        onTap: () => _showReAddConfirmationDialog(context, name),
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: currentCategoryColor.withOpacity(0.1),
+                            borderRadius: BorderRadius.circular(12),
+                          ),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.person_add,
+                                size: 16,
+                                color: currentCategoryColor[400],
+                              ),
+                              const SizedBox(width: 4),
+                              Text(
+                                'Tekrar Ekle',
+                                style: TextStyle(
+                                  fontSize: 12,
+                                  color: currentCategoryColor[400],
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ],
@@ -485,6 +571,131 @@ class _ProfileScreenState extends State<ProfileScreen> {
         },
         transitionDuration: const Duration(milliseconds: 150),
         reverseTransitionDuration: const Duration(milliseconds: 150),
+      ),
+    );
+  }
+
+  void _showReAddConfirmationDialog(BuildContext context, String name) {
+    showDialog(
+      context: context,
+      builder: (context) => Dialog(
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(24),
+        ),
+        child: Container(
+          width: MediaQuery.of(context).size.width * 0.9,
+          padding: const EdgeInsets.fromLTRB(24, 20, 24, 24),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  const Text(
+                    "Tekrar Ekle",
+                    style: TextStyle(
+                      fontSize: 22,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: BorderRadius.circular(20),
+                      onTap: () => Navigator.pop(context),
+                      child: Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: Colors.grey[100],
+                          borderRadius: BorderRadius.circular(12),
+                        ),
+                        child: Icon(
+                          Icons.close,
+                          size: 20,
+                          color: Colors.grey[700],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Text(
+                "$name kullanıcısını tekrar eklemek istediğinize emin misiniz?",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  _buildCoinIcon(size: 20),
+                  const SizedBox(width: 6),
+                  const Text(
+                    "1",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                ],
+              ),
+              const SizedBox(height: 24),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () => Navigator.pop(context),
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.grey[200],
+                        foregroundColor: Colors.black87,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        "İptal",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(width: 12),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        // TODO: Implement re-add functionality
+                        Navigator.pop(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: currentCategoryColor,
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(16),
+                        ),
+                        elevation: 0,
+                      ),
+                      child: const Text(
+                        "Tekrar Ekle",
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ),
       ),
     );
   }

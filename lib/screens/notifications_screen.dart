@@ -24,13 +24,11 @@ class NotificationsScreen extends StatefulWidget {
 }
 
 class _NotificationsScreenState extends State<NotificationsScreen> {
-  int _selectedIndex = 0;
-
   final List<Map<String, dynamic>> notifications = [
     {
       'user': {
         'name': 'Ahmet Yılmaz',
-        'image': null, // Profil resmi null ise varsayılan icon kullanılacak
+        'image': null,
         'status': 'Online',
         'level': 6,
         'likes': 156
@@ -54,97 +52,35 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
   ];
 
   void _onItemTapped(int index) {
-    setState(() {
-      _selectedIndex = index;
-    });
+    widget.onItemSelected(index);
     
     if (index == 3) {
-      // Profile icon tapped
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => ProfileScreen(
+        MaterialPageRoute(
+          builder: (context) => ProfileScreen(
             selectedMainCategory: widget.selectedMainCategory,
             selectedColor: widget.selectedColor,
           ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
         ),
       );
     } else if (index == 2) {
-      // Messages icon tapped
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
+        MaterialPageRoute(
+          builder: (context) => MessagesScreen(
             selectedMainCategory: widget.selectedMainCategory,
             selectedColor: widget.selectedColor,
           ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
         ),
       );
     } else if (index == 1) {
-      // Call icon tapped
-      Navigator.pushReplacement(
+      Navigator.push(
         context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
+        MaterialPageRoute(
+          builder: (context) => CallScreen(
             selectedCategory: widget.selectedMainCategory,
           ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
         ),
       );
     }
@@ -249,8 +185,8 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         children: [
                           Flexible(
                             child: Text(
-                            notification['user']['name'],
-                            style: const TextStyle(
+                              notification['user']['name'],
+                              style: const TextStyle(
                                 fontSize: 14,
                                 fontWeight: FontWeight.w500,
                               ),
@@ -269,12 +205,16 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                         ],
                       ),
                       const SizedBox(height: 4),
-                      Text(
-                        notification['time'],
-                        style: TextStyle(
-                          fontSize: 12,
-                          color: Colors.grey[600],
-                        ),
+                      Row(
+                        children: [
+                          Text(
+                            notification['time'],
+                            style: TextStyle(
+                              fontSize: 12,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
                       ),
                     ],
                   ),
@@ -315,58 +255,6 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                       fontSize: 18,
                       fontWeight: FontWeight.w600,
                       color: Colors.white,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  left: 0,
-                  top: 0,
-                  bottom: 0,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: const BorderRadius.horizontal(left: Radius.circular(25)),
-                      onTap: () {
-                        if (widget.selectedIndex == 1) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CallScreen(
-                                selectedCategory: widget.selectedMainCategory,
-                              ),
-                            ),
-                          );
-                        } else if (widget.selectedIndex == 2) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => MessagesScreen(
-                                selectedMainCategory: widget.selectedMainCategory,
-                                selectedColor: widget.selectedColor,
-                              ),
-                            ),
-                          );
-                        } else if (widget.selectedIndex == 3) {
-                          Navigator.pushReplacement(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => ProfileScreen(
-                                selectedMainCategory: widget.selectedMainCategory,
-                                selectedColor: widget.selectedColor,
-                              ),
-                            ),
-                          );
-                        }
-                      },
-                      child: Container(
-                        width: 46,
-                        height: 46,
-                        child: const Icon(
-                          Icons.arrow_back,
-                          color: Colors.white,
-                          size: 24,
-                        ),
-                      ),
                     ),
                   ),
                 ),
