@@ -296,9 +296,7 @@ class _ChatScreenState extends State<ChatScreen> {
                                   shape: BoxShape.circle,
                                   color: widget.user['status'].toLowerCase() == 'online'
                                       ? Colors.green[400]
-                                      : widget.user['status'].toLowerCase() == 'away'
-                                          ? Colors.orange[400]
-                                          : Colors.grey[400],
+                                      : Colors.grey[400],
                                   border: Border.all(
                                     color: Colors.white,
                                     width: 2,

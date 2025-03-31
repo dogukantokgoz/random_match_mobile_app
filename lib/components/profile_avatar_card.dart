@@ -177,9 +177,7 @@ class ProfileAvatarCard extends StatelessWidget {
                       decoration: BoxDecoration(
                         color: status == 'Online' 
                             ? Colors.green 
-                            : status == 'Away' 
-                                ? Colors.orange 
-                                : Colors.grey,
+                            : Colors.grey,
                         shape: BoxShape.circle,
                         border: Border.all(
                           color: backgroundColor,

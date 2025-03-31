@@ -156,9 +156,7 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
                           shape: BoxShape.circle,
                           color: notification['user']['status'].toLowerCase() == 'online'
                               ? Colors.green[400]
-                              : notification['user']['status'].toLowerCase() == 'away'
-                                  ? Colors.orange[400]
-                                  : Colors.grey[400],
+                              : Colors.grey[400],
                           border: Border.all(
                             color: Colors.white,
                             width: 2,

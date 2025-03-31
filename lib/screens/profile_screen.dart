@@ -32,11 +32,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
     'Arkadaşlar': {'color': Colors.blue, 'icon': Icons.people, 'items': [
       {'name': 'John Doe', 'status': 'Online', 'level': 5, 'likes': 128, 'bio': 'Hey there! I\'m using Random Match'},
       {'name': 'Jane Smith', 'status': 'Offline', 'level': 3, 'likes': 64, 'bio': 'Life is beautiful'},
-      {'name': 'Mike Johnson', 'status': 'Away', 'level': 7, 'likes': 256, 'bio': 'Music lover 🎵'},
+      {'name': 'Mike Johnson', 'status': 'Offline', 'level': 7, 'likes': 256, 'bio': 'Music lover 🎵'},
     ]},
     'İstekler': {'color': Colors.green, 'icon': Icons.person_add, 'items': [
       {'name': 'Alice Brown', 'status': 'Online', 'level': 4, 'likes': 96, 'bio': 'Adventure seeker'},
-      {'name': 'Bob Wilson', 'status': 'Away', 'level': 6, 'likes': 158, 'bio': 'Sports enthusiast ⚽'},
+      {'name': 'Bob Wilson', 'status': 'Offline', 'level': 6, 'likes': 158, 'bio': 'Sports enthusiast ⚽'},
       {'name': 'Carol White', 'status': 'Online', 'level': 2, 'likes': 42, 'bio': 'Art & Design'},
     ]},
     'Sildiklerim': {'color': Colors.red, 'icon': Icons.person_remove, 'items': [
@@ -406,9 +406,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           shape: BoxShape.circle,
                           color: status.toLowerCase() == 'online'
                               ? Colors.green[400]
-                              : status.toLowerCase() == 'away'
-                                  ? Colors.orange[400]
-                                  : Colors.grey[400],
+                              : Colors.grey[400],
                           border: Border.all(
                             color: Colors.white,
                             width: 2,
@@ -457,9 +455,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                           fontSize: 12,
                           color: status.toLowerCase() == 'online'
                               ? Colors.green[600]
-                              : status.toLowerCase() == 'away'
-                                  ? Colors.orange[600]
-                                  : Colors.grey[600],
+                              : Colors.grey[600],
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,

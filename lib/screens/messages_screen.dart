@@ -50,7 +50,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
       'lastMessage': 'Great idea!',
       'time': '2 hours ago',
       'unread': true,
-      'status': 'Away',
+      'status': 'Offline',
       'level': 7,
       'likes': 256
     },
@@ -199,9 +199,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           shape: BoxShape.circle,
                           color: message['status'].toLowerCase() == 'online' 
                               ? Colors.green[400]
-                              : message['status'].toLowerCase() == 'away' 
-                                  ? Colors.orange[400]
-                                  : Colors.grey[400],
+                              : Colors.grey[400],
                           border: Border.all(
                             color: Colors.white,
                             width: 2,
@@ -250,9 +248,7 @@ class _MessagesScreenState extends State<MessagesScreen> {
                           fontSize: 12,
                           color: message['status'].toLowerCase() == 'online'
                               ? Colors.green[600]
-                              : message['status'].toLowerCase() == 'away'
-                                  ? Colors.orange[600]
-                                  : Colors.grey[600],
+                              : Colors.grey[600],
                         ),
                         maxLines: 1,
                         overflow: TextOverflow.ellipsis,
