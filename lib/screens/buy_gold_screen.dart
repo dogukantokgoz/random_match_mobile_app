@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'premium_screen.dart';
+import 'call_screen.dart';
 
 class BuyGoldScreen extends StatelessWidget {
   final String selectedMainCategory;
@@ -176,16 +177,63 @@ class BuyGoldScreen extends StatelessWidget {
                   ),
                 ),
                 Center(
-                  child: Text(
-                    'Altın Satın Al',
-                    style: const TextStyle(
-                      color: Colors.white,
-                      fontSize: 18,
-                      fontWeight: FontWeight.w500,
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 46),
+                    child: Text(
+                      'Altın Satın Al',
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                        fontWeight: FontWeight.w500,
+                      ),
                     ),
                   ),
                 ),
-                const SizedBox(width: 46), // Balance for back button
+                Positioned(
+                  right: 0,
+                  child: Material(
+                    color: Colors.transparent,
+                    child: InkWell(
+                      borderRadius: const BorderRadius.horizontal(right: Radius.circular(25)),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          PageRouteBuilder(
+                            pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
+                              selectedCategory: selectedMainCategory,
+                            ),
+                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
+                              const begin = Offset(0.0, 0.03);
+                              const end = Offset.zero;
+                              const curve = Curves.easeOut;
+                              var tween = Tween(begin: begin, end: end).chain(
+                                CurveTween(curve: curve),
+                              );
+                              return SlideTransition(
+                                position: animation.drive(tween),
+                                child: FadeTransition(
+                                  opacity: animation,
+                                  child: child,
+                                ),
+                              );
+                            },
+                            transitionDuration: const Duration(milliseconds: 150),
+                            reverseTransitionDuration: const Duration(milliseconds: 150),
+                          ),
+                        );
+                      },
+                      child: Container(
+                        width: 46,
+                        height: 46,
+                        child: const Icon(
+                          Icons.phone,
+                          color: Colors.white,
+                          size: 22,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
               ],
             ),
           ),
