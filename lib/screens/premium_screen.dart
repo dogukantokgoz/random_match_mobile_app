@@ -27,7 +27,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
   void initState() {
     super.initState();
     _pageController = PageController(
-      viewportFraction: 0.75,
+      viewportFraction: 0.85,
       initialPage: 0,
     );
   }
@@ -47,117 +47,150 @@ class _PremiumScreenState extends State<PremiumScreen> {
     required int totalItems,
   }) {
     return Container(
-      width: MediaQuery.of(context).size.width * 0.75,
+      width: MediaQuery.of(context).size.width * 0.85,
       margin: const EdgeInsets.symmetric(horizontal: 20),
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Container(
-            decoration: BoxDecoration(
-              color: Colors.grey[100],
-              borderRadius: BorderRadius.circular(16),
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.black.withOpacity(0.08),
-                  blurRadius: 15,
-                  offset: const Offset(0, 4),
-                ),
-              ],
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
             ),
-            clipBehavior: Clip.hardEdge,
-            child: Material(
-              color: Colors.transparent,
-              child: InkWell(
-                borderRadius: BorderRadius.circular(16),
-                onTap: () {},
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      decoration: BoxDecoration(
-                        color: widget.selectedColor.withOpacity(0.08),
-                        borderRadius: const BorderRadius.vertical(top: Radius.circular(16)),
+          ],
+        ),
+        clipBehavior: Clip.hardEdge,
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {},
+            child: Padding(
+              padding: const EdgeInsets.all(24),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisSize: MainAxisSize.min,
+                children: [
+                  // Icon and Title Row
+                  Row(
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: BoxDecoration(
+                          color: widget.selectedColor[100],
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                        child: Icon(
+                          index == 0 ? Icons.star_border :
+                          index == 1 ? Icons.workspace_premium :
+                          Icons.diamond_outlined,
+                          color: widget.selectedColor[900],
+                          size: 20,
+                        ),
                       ),
-                      child: Text(
-                        title,
-                        textAlign: TextAlign.center,
+                    ],
+                  ),
+                  const SizedBox(height: 16),
+                  // Title
+                  Text(
+                    title,
+                    style: const TextStyle(
+                      color: Colors.black87,
+                      fontSize: 24,
+                      fontWeight: FontWeight.w600,
+                    ),
+                  ),
+                  const SizedBox(height: 4),
+                  // Subtitle
+                  Text(
+                    'For individuals and small teams',
+                    style: TextStyle(
+                      color: Colors.grey[600],
+                      fontSize: 14,
+                    ),
+                  ),
+                  const SizedBox(height: 24),
+                  // Price
+                  Row(
+                    crossAxisAlignment: CrossAxisAlignment.end,
+                    children: [
+                      Text(
+                        price,
                         style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 18,
+                          color: Colors.black,
+                          fontSize: 32,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(20, 14, 16, 14),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          ...features.map((feature) => Padding(
-                            padding: const EdgeInsets.only(bottom: 8),
-                            child: Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Icon(
-                                  Icons.check_circle,
-                                  color: widget.selectedColor,
-                                  size: 15,
-                                ),
-                                const SizedBox(width: 8),
-                                Expanded(
-                                  child: Text(
-                                    feature,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.grey[800],
-                                      height: 1.4,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          )).toList(),
-                        ],
+                      const SizedBox(width: 8),
+                      if (oldPrice != price) Padding(
+                        padding: const EdgeInsets.only(bottom: 4),
+                        child: Text(
+                          oldPrice,
+                          style: TextStyle(
+                            color: Colors.grey[500],
+                            fontSize: 16,
+                            decoration: TextDecoration.lineThrough,
+                            decorationColor: Colors.grey[500],
+                          ),
+                        ),
                       ),
-                    ),
-                    Container(
-                      width: double.infinity,
-                      padding: const EdgeInsets.symmetric(vertical: 14),
-                      decoration: BoxDecoration(
-                        color: widget.selectedColor.withOpacity(0.08),
-                        borderRadius: const BorderRadius.vertical(bottom: Radius.circular(16)),
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            price,
-                            style: const TextStyle(
-                              color: Colors.black87,
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                    ],
+                  ),
+                  const SizedBox(height: 24),
+                  // Features
+                  ...features.map((feature) => Padding(
+                    padding: const EdgeInsets.only(bottom: 16),
+                    child: Row(
+                      children: [
+                        Icon(
+                          Icons.check,
+                          color: Colors.grey[800],
+                          size: 20,
+                        ),
+                        const SizedBox(width: 12),
+                        Expanded(
+                          child: Text(
+                            feature,
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[800],
                             ),
                           ),
-                          const SizedBox(width: 8),
-                          Text(
-                            oldPrice,
-                            style: const TextStyle(
-                              color: Colors.black38,
-                              fontSize: 12,
-                              decoration: TextDecoration.lineThrough,
-                            ),
-                          ),
-                        ],
+                        ),
+                      ],
+                    ),
+                  )).toList(),
+                  const SizedBox(height: 24),
+                  // Get Started Button
+                  SizedBox(
+                    width: double.infinity,
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: widget.selectedColor[900],
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(vertical: 16),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8),
+                        ),
+                      ),
+                      child: const Text(
+                        'Get started',
+                        style: TextStyle(
+                          fontSize: 16,
+                          fontWeight: FontWeight.w600,
+                        ),
                       ),
                     ),
-                  ],
-                ),
+                  ),
+                ],
               ),
             ),
           ),
-        ],
+        ),
       ),
     );
   }
@@ -209,6 +242,28 @@ class _PremiumScreenState extends State<PremiumScreen> {
 
   @override
   Widget build(BuildContext context) {
+    // İndirim yüzdesini hesaplama fonksiyonu
+    String calculateDiscount(String oldPrice, String currentPrice) {
+      double old = double.parse(oldPrice.replaceAll('₺', '').replaceAll(',', '.'));
+      double current = double.parse(currentPrice.replaceAll('₺', '').replaceAll(',', '.'));
+      int discount = ((old - current) / old * 100).round();
+      return '%$discount İndirim';
+    }
+
+    final features = [
+      {'text': 'Özel profil resmi', 'icon': Icons.account_circle},
+      {'text': 'Özel profil rozeti', 'icon': Icons.military_tech},
+      {'text': 'Reklamsız deneyim', 'icon': Icons.block},
+      {'text': 'Özel mesaj bildirimleri', 'icon': Icons.notifications},
+      {'text': 'Öncelikli destek', 'icon': Icons.support_agent},
+      {'text': 'Özel temalar', 'icon': Icons.palette},
+      {'text': 'Sınırsız mesajlaşma', 'icon': Icons.chat},
+      {'text': 'Özel emoji paketi', 'icon': Icons.emoji_emotions},
+      {'text': 'Profil istatistikleri', 'icon': Icons.analytics},
+      {'text': 'Gelişmiş arama filtreleri', 'icon': Icons.filter_alt},
+      {'text': 'VIP müşteri desteği', 'icon': Icons.diamond},
+    ];
+
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: PreferredSize(
@@ -257,99 +312,237 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     ),
                   ),
                 ),
-                Positioned(
-                  right: 0,
-                  child: Material(
-                    color: Colors.transparent,
-                    child: InkWell(
-                      borderRadius: const BorderRadius.horizontal(right: Radius.circular(25)),
-                      onTap: () {
-                        Navigator.pushReplacement(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
-                              selectedCategory: widget.selectedMainCategory,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              const begin = Offset(0.0, 0.03);
-                              const end = Offset.zero;
-                              const curve = Curves.easeOut;
-                              var tween = Tween(begin: begin, end: end).chain(
-                                CurveTween(curve: curve),
-                              );
-                              return SlideTransition(
-                                position: animation.drive(tween),
-                                child: FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                ),
-                              );
-                            },
-                            transitionDuration: const Duration(milliseconds: 150),
-                            reverseTransitionDuration: const Duration(milliseconds: 150),
-                          ),
-                        );
-                      },
-                      child: Container(
-                        width: 46,
-                        height: 46,
-                        child: const Icon(
-                          Icons.phone,
-                          color: Colors.white,
-                          size: 22,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
               ],
             ),
           ),
         ),
       ),
-      body: Center(
-        child: ConstrainedBox(
-          constraints: BoxConstraints(
-            maxHeight: MediaQuery.of(context).size.height * 0.6,
+      body: Column(
+        children: [
+          Expanded(
+            child: SingleChildScrollView(
+              child: Padding(
+                padding: const EdgeInsets.all(24.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    // Premium Title
+                    Center(
+                      child: Column(
+                        children: [
+                          Icon(
+                            Icons.workspace_premium,
+                            size: 36,
+                            color: widget.selectedColor[900],
+                          ),
+                          const SizedBox(height: 12),
+                          Text(
+                            'Premium',
+                            style: TextStyle(
+                              fontSize: 28,
+                              fontWeight: FontWeight.bold,
+                              color: widget.selectedColor[900],
+                            ),
+                          ),
+                          const SizedBox(height: 6),
+                          Text(
+                            'Tüm özelliklere erişim sağlayın',
+                            style: TextStyle(
+                              fontSize: 14,
+                              color: Colors.grey[600],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 24),
+                    // Features List
+                    ...features.map((feature) => Padding(
+                      padding: const EdgeInsets.only(bottom: 14),
+                      child: Row(
+                        children: [
+                          Icon(
+                            feature['icon'] as IconData,
+                            color: widget.selectedColor[900],
+                            size: 20,
+                          ),
+                          const SizedBox(width: 12),
+                          Expanded(
+                            child: Text(
+                              feature['text'] as String,
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[800],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    )).toList(),
+                  ],
+                ),
+              ),
+            ),
           ),
-          child: Container(
-            padding: const EdgeInsets.symmetric(horizontal: 20),
+          // Bottom Price Slider Section
+          Container(
+            margin: const EdgeInsets.fromLTRB(16, 0, 16, 16),
+            height: 120, // Reduced from 150
             child: PageView.builder(
               controller: _pageController,
-              padEnds: true,
               itemCount: 3,
               itemBuilder: (context, index) {
-                return _buildPremiumPackage(
-                  context,
-                  title: 'Premium ${index + 1}',
-                  features: index == 0 ? [
-                    'Özel profil rozeti',
-                    'Reklamsız deneyim',
-                    'Özel mesaj bildirimleri',
-                    'Öncelikli destek',
-                    'Özel temalar',
-                  ] : index == 1 ? [
-                    'Premium 1\'in tüm özellikleri',
-                    'Sınırsız mesajlaşma',
-                    'Özel emoji paketi',
-                    'Profil istatistikleri',
-                    'Gelişmiş arama filtreleri',
-                  ] : [
-                    'Premium 2\'nin tüm özellikleri',
-                    'VIP müşteri desteği',
-                    'Özel etkinlik davetiyeleri',
-                    'Profil özelleştirme',
-                    'Beta özelliklere erken erişim',
-                  ],
-                  price: index == 0 ? '₺49.99' : index == 1 ? '₺79.99' : '₺129.99',
-                  oldPrice: index == 0 ? '₺99.99' : index == 1 ? '₺159.99' : '₺259.99',
-                  index: index,
-                  totalItems: 3,
+                final plans = [
+                  {'title': 'Haftalık', 'price': '₺19,99', 'oldPrice': '₺39,99'},
+                  {'title': 'Aylık', 'price': '₺49,99', 'oldPrice': '₺99,99'},
+                  {'title': 'Yıllık', 'price': '₺399,99', 'oldPrice': '₺799,99'},
+                ];
+                return Container(
+                  margin: const EdgeInsets.all(6), // Reduced from 8
+                  child: Material(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(12), // Reduced from 16
+                    child: InkWell(
+                      onTap: () {
+                        // Kart tıklama işlemi
+                      },
+                      borderRadius: BorderRadius.circular(12), // Reduced from 16
+                      child: Container(
+                        decoration: BoxDecoration(
+                          border: Border.all(
+                            color: Colors.grey[200]!,
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(12), // Reduced from 16
+                        ),
+                        child: Stack(
+                          children: [
+                            // İndirim Badge'i
+                            Positioned(
+                              top: 8, // Reduced from 12
+                              right: 8, // Reduced from 12
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), // Reduced padding
+                                decoration: BoxDecoration(
+                                  color: widget.selectedColor[900]!.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8), // Reduced from 12
+                                ),
+                                child: Text(
+                                  calculateDiscount(plans[index]['oldPrice']!, plans[index]['price']!),
+                                  style: TextStyle(
+                                    color: widget.selectedColor[900],
+                                    fontSize: 11, // Reduced from 12
+                                    fontWeight: FontWeight.w600,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            // Popüler Badge'i (Sadece aylık plan için)
+                            if (index == 1) Positioned(
+                              top: 8, // Reduced from 12
+                              left: 8, // Reduced from 12
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(horizontal: 6, vertical: 2), // Reduced padding
+                                decoration: BoxDecoration(
+                                  color: widget.selectedColor[900]!.withOpacity(0.1),
+                                  borderRadius: BorderRadius.circular(8), // Reduced from 12
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Icon(
+                                      Icons.star,
+                                      size: 12, // Reduced from 14
+                                      color: widget.selectedColor[900],
+                                    ),
+                                    const SizedBox(width: 3), // Reduced from 4
+                                    Text(
+                                      'Popüler',
+                                      style: TextStyle(
+                                        color: widget.selectedColor[900],
+                                        fontSize: 11, // Reduced from 12
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            // Ana İçerik
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Column(
+                                  children: [
+                                    Padding(
+                                      padding: const EdgeInsets.only(top: 8), // Reduced from 12
+                                      child: Text(
+                                        plans[index]['title']!,
+                                        style: TextStyle(
+                                          fontSize: 14, // Reduced from 16
+                                          fontWeight: FontWeight.w500,
+                                          color: Colors.grey[800],
+                                        ),
+                                      ),
+                                    ),
+                                    const SizedBox(height: 4), // Reduced from 8
+                                    Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      children: [
+                                        Text(
+                                          plans[index]['price']!,
+                                          style: TextStyle(
+                                            fontSize: 20, // Reduced from 24
+                                            fontWeight: FontWeight.bold,
+                                            color: widget.selectedColor[900],
+                                          ),
+                                        ),
+                                        const SizedBox(width: 6), // Reduced from 8
+                                        Text(
+                                          plans[index]['oldPrice']!,
+                                          style: TextStyle(
+                                            fontSize: 12, // Reduced from 14
+                                            color: Colors.grey[500],
+                                            decoration: TextDecoration.lineThrough,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                Padding(
+                                  padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                                  child: Container(
+                                    height: 32,
+                                    decoration: BoxDecoration(
+                                      color: widget.selectedColor[900],
+                                      borderRadius: BorderRadius.circular(4),
+                                    ),
+                                    child: Center(
+                                      child: Text(
+                                        'Hemen Başla',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
                 );
               },
             ),
           ),
-        ),
+        ],
       ),
     );
   }
