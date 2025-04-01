@@ -54,15 +54,19 @@ class BuyGoldScreen extends StatelessWidget {
     required Color color,
   }) {
     return Container(
-      width: (MediaQuery.of(context).size.width - 48) / 3,
-      margin: const EdgeInsets.only(bottom: 16),
+      width: (MediaQuery.of(context).size.width - 48) / 2,
+      margin: const EdgeInsets.all(8),
       decoration: BoxDecoration(
-        color: Colors.grey[100],
-        borderRadius: BorderRadius.circular(16),
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(8),
+        border: Border.all(
+          color: Colors.grey[200]!,
+          width: 1,
+        ),
         boxShadow: [
           BoxShadow(
             color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
+            blurRadius: 8,
             offset: const Offset(0, 2),
           ),
         ],
@@ -70,65 +74,61 @@ class BuyGoldScreen extends StatelessWidget {
       child: Material(
         color: Colors.transparent,
         child: InkWell(
-          borderRadius: BorderRadius.circular(16),
+          borderRadius: BorderRadius.circular(8),
           onTap: () {},
-          child: Padding(
-            padding: const EdgeInsets.all(12),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 12,
-                    vertical: 6,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.grey[200],
-                    borderRadius: BorderRadius.circular(20),
-                  ),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      _buildCoinIcon(size: 18),
-                      const SizedBox(width: 4),
-                      Text(
-                        amount,
-                        style: const TextStyle(
-                          color: Colors.black87,
-                          fontSize: 16,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ],
+          child: Stack(
+            children: [
+              Positioned(
+                top: 12,
+                right: 12,
+                child: Text(
+                  price,
+                  style: TextStyle(
+                    color: Colors.grey[800],
+                    fontSize: 16,
+                    fontWeight: FontWeight.w600,
                   ),
                 ),
-                const SizedBox(height: 8),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.center,
+              ),
+              Padding(
+                padding: const EdgeInsets.all(16),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
                   children: [
+                    Row(
+                      children: [
+                        _buildCoinIcon(size: 32),
+                        const SizedBox(width: 12),
+                        Text(
+                          amount,
+                          style: TextStyle(
+                            color: Colors.grey[900],
+                            fontSize: 24,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ],
+                    ),
+                    const SizedBox(height: 16),
                     Text(
-                      price,
-                      style: const TextStyle(
-                        color: Colors.black87,
-                        fontSize: 16,
-                        fontWeight: FontWeight.w600,
+                      '${(int.parse(amount) * 0.9).round()} Altın',
+                      style: TextStyle(
+                        color: Colors.grey[800],
+                        fontSize: 14,
                       ),
                     ),
-                    const SizedBox(width: 4),
                     Text(
-                      oldPrice,
+                      '+ ${(int.parse(amount) * 0.1).round()} Bonus Altın',
                       style: TextStyle(
-                        color: Colors.grey[400],
-                        fontSize: 12,
-                        decoration: TextDecoration.lineThrough,
+                        color: selectedColor[700],
+                        fontSize: 14,
                       ),
                     ),
                   ],
                 ),
-              ],
-            ),
+              ),
+            ],
           ),
         ),
       ),
@@ -138,7 +138,7 @@ class BuyGoldScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: Colors.grey[50],
       appBar: PreferredSize(
         preferredSize: const Size.fromHeight(70),
         child: SafeArea(
@@ -260,8 +260,12 @@ class BuyGoldScreen extends StatelessWidget {
                             onTap: () {},
                             child: Container(
                               decoration: BoxDecoration(
-                                color: Colors.grey[100],
+                                color: Colors.white,
                                 borderRadius: BorderRadius.circular(23),
+                                border: Border.all(
+                                  color: Colors.grey[200]!,
+                                  width: 1,
+                                ),
                                 boxShadow: [
                                   BoxShadow(
                                     color: Colors.black.withOpacity(0.05),
@@ -274,7 +278,7 @@ class BuyGoldScreen extends StatelessWidget {
                                 child: Text(
                                   'Ücretsiz Altın Kazan',
                                   style: TextStyle(
-                                    color: selectedColor,
+                                    color: selectedColor[900],
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
