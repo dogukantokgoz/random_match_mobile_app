@@ -704,95 +704,23 @@ class _ProfileScreenState extends State<ProfileScreen> {
     
     if (index == 2) {
       // Messages icon tapped
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
-            selectedMainCategory: widget.selectedMainCategory,
-            selectedColor: widget.selectedColor,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
-        ),
-      );
+      _navigateToScreen(MessagesScreen(
+        selectedMainCategory: widget.selectedMainCategory,
+        selectedColor: widget.selectedColor,
+      ));
     } else if (index == 1) {
       // Call icon tapped
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
-            selectedCategory: widget.selectedMainCategory,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
-        ),
-      );
+      _navigateToScreen(CallScreen(
+        selectedMainCategory: widget.selectedMainCategory,
+      ));
     } else if (index == 0) {
       // Notifications icon tapped
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => NotificationsScreen(
-            selectedMainCategory: widget.selectedMainCategory,
-            selectedColor: widget.selectedColor,
-            selectedIndex: 0,
-            onItemSelected: (index) {},
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
-        ),
-      );
+      _navigateToScreen(NotificationsScreen(
+        selectedMainCategory: widget.selectedMainCategory,
+        selectedColor: widget.selectedColor,
+        selectedIndex: 0,
+        onItemSelected: (index) {},
+      ));
     }
   }
 
@@ -989,6 +917,32 @@ class _ProfileScreenState extends State<ProfileScreen> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _navigateToScreen(Widget screen) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.01);
+          const end = Offset.zero;
+          const curve = Curves.easeOutCubic;
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 100),
       ),
     );
   }

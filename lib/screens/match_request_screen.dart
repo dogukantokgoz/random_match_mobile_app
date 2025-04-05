@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'match_screen.dart';
 
-class MatchRequestScreen extends StatelessWidget {
+class MatchRequestScreen extends StatefulWidget {
   final String selectedMainCategory;
   final MaterialColor selectedColor;
 
@@ -12,13 +12,18 @@ class MatchRequestScreen extends StatelessWidget {
   });
 
   @override
+  State<MatchRequestScreen> createState() => _MatchRequestScreenState();
+}
+
+class _MatchRequestScreenState extends State<MatchRequestScreen> {
+  @override
   Widget build(BuildContext context) {
-    final double buttonWidth = 100.0;
-    final double totalButtonsWidth = (buttonWidth * 2) + 16.0; // 2 buttons with gap
-    final double cardWidth = totalButtonsWidth;
+    const double buttonWidth = 100.0;
+    const double totalButtonsWidth = (buttonWidth * 2) + 16.0; // 2 buttons with gap
+    const double cardWidth = totalButtonsWidth;
 
     return Scaffold(
-      backgroundColor: selectedColor[900],
+      backgroundColor: widget.selectedColor[900],
       body: SafeArea(
         child: Center(
           child: Column(
@@ -38,7 +43,7 @@ class MatchRequestScreen extends StatelessWidget {
                       offset: const Offset(0, 4),
                     ),
                     BoxShadow(
-                      color: selectedColor.withOpacity(0.05),
+                      color: widget.selectedColor.withOpacity(0.05),
                       blurRadius: 20,
                       offset: const Offset(0, 2),
                     ),
@@ -65,8 +70,8 @@ class MatchRequestScreen extends StatelessWidget {
                                   begin: Alignment.topLeft,
                                   end: Alignment.bottomRight,
                                   colors: [
-                                    selectedColor[400]!,
-                                    selectedColor[600]!,
+                                    widget.selectedColor[400]!,
+                                    widget.selectedColor[600]!,
                                   ],
                                 ),
                                 border: Border.all(
@@ -75,7 +80,7 @@ class MatchRequestScreen extends StatelessWidget {
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: selectedColor.withOpacity(0.2),
+                                    color: widget.selectedColor.withOpacity(0.2),
                                     blurRadius: 8,
                                     offset: const Offset(0, 2),
                                   ),
@@ -159,20 +164,17 @@ class MatchRequestScreen extends StatelessWidget {
                     icon: Icons.check,
                     label: 'Kabul Et',
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => MatchScreen(
-                            selectedMainCategory: selectedMainCategory,
-                            selectedColor: selectedColor,
-                            user: {
-                              'name': 'John Doe',
-                              'level': 5,
-                              'likes': 123,
-                              'status': 'online',
-                              'bio': 'Merhaba! Ben müzik ve seyahat tutkunuyum. Yeni arkadaşlar edinmek için buradayım!',
-                            },
-                          ),
+                      _navigateToScreen(
+                        MatchScreen(
+                          selectedMainCategory: widget.selectedMainCategory,
+                          selectedColor: widget.selectedColor,
+                          user: {
+                            'name': 'John Doe',
+                            'level': 5,
+                            'likes': 123,
+                            'status': 'online',
+                            'bio': 'Merhaba! Ben müzik ve seyahat tutkunuyum. Yeni arkadaşlar edinmek için buradayım!',
+                          },
                         ),
                       );
                     },
@@ -183,6 +185,32 @@ class MatchRequestScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _navigateToScreen(Widget screen) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.01);
+          const end = Offset.zero;
+          const curve = Curves.easeOutCubic;
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 100),
       ),
     );
   }

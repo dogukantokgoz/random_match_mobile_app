@@ -15,12 +15,12 @@ import 'match_request_screen.dart';
 
 class CallScreen extends StatefulWidget {
   final int currentGold;
-  final String? selectedCategory;
+  final String? selectedMainCategory;
 
   const CallScreen({
     super.key,
     this.currentGold = 0,
-    this.selectedCategory,
+    this.selectedMainCategory,
   });
 
   @override
@@ -56,7 +56,7 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     super.initState();
-    _selectedCategory = widget.selectedCategory ?? 'Genel';
+    _selectedCategory = widget.selectedMainCategory ?? 'Genel';
     
     _animationController1 = AnimationController(
       duration: const Duration(milliseconds: 1500),
@@ -120,96 +120,24 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
     
     if (index == 3) {
       // Profile icon tapped
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => ProfileScreen(
-            selectedMainCategory: _selectedCategory,
-            selectedColor: currentCategoryColor,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
-        ),
-      );
+      _navigateToScreen(ProfileScreen(
+        selectedMainCategory: _selectedCategory,
+        selectedColor: currentCategoryColor,
+      ));
     } else if (index == 2) {
       // Messages icon tapped
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => MessagesScreen(
-            selectedMainCategory: _selectedCategory,
-            selectedColor: currentCategoryColor,
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
-        ),
-      );
+      _navigateToScreen(MessagesScreen(
+        selectedMainCategory: _selectedCategory,
+        selectedColor: currentCategoryColor,
+      ));
     } else if (index == 0) {
       // Notifications icon tapped
-      Navigator.pushReplacement(
-        context,
-        PageRouteBuilder(
-          pageBuilder: (context, animation, secondaryAnimation) => NotificationsScreen(
-            selectedMainCategory: _selectedCategory,
-            selectedColor: currentCategoryColor,
-            selectedIndex: 0,
-            onItemSelected: (index) {},
-          ),
-          transitionsBuilder: (context, animation, secondaryAnimation, child) {
-            const begin = Offset(0.0, 0.03);
-            const end = Offset.zero;
-            const curve = Curves.easeOut;
-
-            var tween = Tween(begin: begin, end: end).chain(
-              CurveTween(curve: curve),
-            );
-
-            return SlideTransition(
-              position: animation.drive(tween),
-              child: FadeTransition(
-                opacity: animation,
-                child: child,
-              ),
-            );
-          },
-          transitionDuration: const Duration(milliseconds: 150),
-          reverseTransitionDuration: const Duration(milliseconds: 150),
-        ),
-      );
+      _navigateToScreen(NotificationsScreen(
+        selectedMainCategory: _selectedCategory,
+        selectedColor: currentCategoryColor,
+        selectedIndex: 0,
+        onItemSelected: (index) {},
+      ));
     }
   }
 
@@ -323,23 +251,25 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
   }
 
   void _navigateToBuyGold() {
-    Navigator.push(
+    _navigateToScreen(BuyGoldScreen(
+      selectedMainCategory: _selectedCategory,
+      selectedColor: currentCategoryColor,
+      currentGold: widget.currentGold,
+    ));
+  }
+
+  Future<dynamic> _navigateToScreen(Widget screen) {
+    return Navigator.push(
       context,
       PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => BuyGoldScreen(
-          selectedMainCategory: _selectedCategory,
-          selectedColor: currentCategoryColor,
-          currentGold: widget.currentGold,
-        ),
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
         transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 0.03);
+          const begin = Offset(0.0, 0.01);
           const end = Offset.zero;
-          const curve = Curves.easeOut;
-
+          const curve = Curves.easeOutCubic;
           var tween = Tween(begin: begin, end: end).chain(
             CurveTween(curve: curve),
           );
-
           return SlideTransition(
             position: animation.drive(tween),
             child: FadeTransition(
@@ -348,8 +278,8 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
             ),
           );
         },
-        transitionDuration: const Duration(milliseconds: 150),
-        reverseTransitionDuration: const Duration(milliseconds: 150),
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 100),
       ),
     );
   }
@@ -405,33 +335,9 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                             ],
                           ),
                           onTap: () async {
-                            final result = await Navigator.push(
-                              context,
-                              PageRouteBuilder(
-                                pageBuilder: (context, animation, secondaryAnimation) => CategoriesScreen(
-                                  selectedCategory: _selectedCategory,
-                                ),
-                                transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                  const begin = Offset(0.0, 0.03);
-                                  const end = Offset.zero;
-                                  const curve = Curves.easeOut;
-
-                                  var tween = Tween(begin: begin, end: end).chain(
-                                    CurveTween(curve: curve),
-                                  );
-
-                                  return SlideTransition(
-                                    position: animation.drive(tween),
-                                    child: FadeTransition(
-                                      opacity: animation,
-                                      child: child,
-                                    ),
-                                  );
-                                },
-                                transitionDuration: const Duration(milliseconds: 150),
-                                reverseTransitionDuration: const Duration(milliseconds: 150),
-                              ),
-                            );
+                            final result = await _navigateToScreen(CategoriesScreen(
+                              selectedCategory: _selectedCategory,
+                            ));
                             if (result != null) {
                               setState(() {
                                 _selectedCategory = result as String;
@@ -642,41 +548,17 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(15),
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) => MatchScreen(
-                                    selectedMainCategory: _selectedCategory,
-                                    selectedColor: currentCategoryColor,
-                                    user: {
-                                      'name': 'Test User',
-                                      'level': 5,
-                                      'likes': 128,
-                                      'status': 'online',
-                                      'bio': 'Hello! I love music and traveling. Looking for new friends to chat with!',
-                                    },
-                                  ),
-                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                    const begin = Offset(0.0, 0.03);
-                                    const end = Offset.zero;
-                                    const curve = Curves.easeOut;
-
-                                    var tween = Tween(begin: begin, end: end).chain(
-                                      CurveTween(curve: curve),
-                                    );
-
-                                    return SlideTransition(
-                                      position: animation.drive(tween),
-                                      child: FadeTransition(
-                                        opacity: animation,
-                                        child: child,
-                                      ),
-                                    );
-                                  },
-                                  transitionDuration: const Duration(milliseconds: 150),
-                                  reverseTransitionDuration: const Duration(milliseconds: 150),
-                                ),
-                              );
+                              _navigateToScreen(MatchScreen(
+                                selectedMainCategory: _selectedCategory,
+                                selectedColor: currentCategoryColor,
+                                user: {
+                                  'name': 'Test User',
+                                  'level': 5,
+                                  'likes': 128,
+                                  'status': 'online',
+                                  'bio': 'Hello! I love music and traveling. Looking for new friends to chat with!',
+                                },
+                              ));
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -705,20 +587,15 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(15),
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => EndMatchScreen(
-                                    selectedColor: currentCategoryColor,
-                                    user: {
-                                      'name': 'John Doe',
-                                      'level': 5,
-                                      'likes': 123,
-                                      'status': 'Online',
-                                    },
-                                  ),
-                                ),
-                              );
+                              _navigateToScreen(EndMatchScreen(
+                                selectedColor: currentCategoryColor,
+                                user: {
+                                  'name': 'John Doe',
+                                  'level': 5,
+                                  'likes': 123,
+                                  'status': 'Online',
+                                },
+                              ));
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -747,15 +624,10 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(15),
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CallStatusScreen(
-                                    selectedColor: currentCategoryColor,
-                                    isBusy: true,
-                                  ),
-                                ),
-                              );
+                              _navigateToScreen(CallStatusScreen(
+                                selectedColor: currentCategoryColor,
+                                isBusy: true,
+                              ));
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -784,15 +656,10 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(15),
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => CallStatusScreen(
-                                    selectedColor: currentCategoryColor,
-                                    isBusy: false,
-                                  ),
-                                ),
-                              );
+                              _navigateToScreen(CallStatusScreen(
+                                selectedColor: currentCategoryColor,
+                                isBusy: false,
+                              ));
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
@@ -883,15 +750,10 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(15),
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => MatchRequestScreen(
-                                    selectedMainCategory: _selectedCategory,
-                                    selectedColor: currentCategoryColor,
-                                  ),
-                                ),
-                              );
+                              _navigateToScreen(MatchRequestScreen(
+                                selectedMainCategory: _selectedCategory,
+                                selectedColor: currentCategoryColor,
+                              ));
                             },
                             child: Container(
                               padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),

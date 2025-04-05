@@ -145,6 +145,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     padding: const EdgeInsets.only(bottom: 16),
                     child: Row(
                       children: [
+                        const SizedBox(width: 4),
                         Icon(
                           Icons.check,
                           color: Colors.grey[800],
@@ -221,7 +222,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
         context,
         MaterialPageRoute(
           builder: (context) => CallScreen(
-            selectedCategory: widget.selectedMainCategory,
+            selectedMainCategory: widget.selectedMainCategory,
           ),
         ),
       );
@@ -238,6 +239,32 @@ class _PremiumScreenState extends State<PremiumScreen> {
         ),
       );
     }
+  }
+
+  void _navigateToScreen(Widget screen) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.01);
+          const end = Offset.zero;
+          const curve = Curves.easeOutCubic;
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 100),
+      ),
+    );
   }
 
   @override
@@ -358,7 +385,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     const SizedBox(height: 24),
                     // Features List
                     ...features.map((feature) => Padding(
-                      padding: const EdgeInsets.only(bottom: 14),
+                      padding: const EdgeInsets.only(bottom: 14, left: 48),
                       child: Row(
                         children: [
                           Icon(

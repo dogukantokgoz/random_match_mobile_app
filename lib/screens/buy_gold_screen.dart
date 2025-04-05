@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'premium_screen.dart';
 import 'call_screen.dart';
 
-class BuyGoldScreen extends StatelessWidget {
+class BuyGoldScreen extends StatefulWidget {
   final String selectedMainCategory;
   final MaterialColor selectedColor;
   final int currentGold;
@@ -16,6 +16,11 @@ class BuyGoldScreen extends StatelessWidget {
     this.selectedIndex = 0,
   });
 
+  @override
+  State<BuyGoldScreen> createState() => _BuyGoldScreenState();
+}
+
+class _BuyGoldScreenState extends State<BuyGoldScreen> {
   Widget _buildCoinIcon({double size = 20}) {
     return Container(
       width: size,
@@ -122,7 +127,7 @@ class BuyGoldScreen extends StatelessWidget {
                     Text(
                       '+ ${(int.parse(amount) * 0.1).round()} Bonus Altın',
                       style: TextStyle(
-                        color: selectedColor[700],
+                        color: widget.selectedColor[700],
                         fontSize: 14,
                       ),
                     ),
@@ -132,6 +137,32 @@ class BuyGoldScreen extends StatelessWidget {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  void _navigateToScreen(Widget screen) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.01);
+          const end = Offset.zero;
+          const curve = Curves.easeOutCubic;
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 100),
       ),
     );
   }
@@ -148,7 +179,7 @@ class BuyGoldScreen extends StatelessWidget {
             margin: const EdgeInsets.fromLTRB(16, 16, 16, 8),
             height: 46,
             decoration: BoxDecoration(
-              color: selectedColor[900]!.withOpacity(0.95),
+              color: widget.selectedColor[900]!.withOpacity(0.95),
               borderRadius: BorderRadius.circular(25),
               boxShadow: [
                 BoxShadow(
@@ -196,31 +227,9 @@ class BuyGoldScreen extends StatelessWidget {
                     child: InkWell(
                       borderRadius: const BorderRadius.horizontal(right: Radius.circular(25)),
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          PageRouteBuilder(
-                            pageBuilder: (context, animation, secondaryAnimation) => CallScreen(
-                              selectedCategory: selectedMainCategory,
-                            ),
-                            transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                              const begin = Offset(0.0, 0.03);
-                              const end = Offset.zero;
-                              const curve = Curves.easeOut;
-                              var tween = Tween(begin: begin, end: end).chain(
-                                CurveTween(curve: curve),
-                              );
-                              return SlideTransition(
-                                position: animation.drive(tween),
-                                child: FadeTransition(
-                                  opacity: animation,
-                                  child: child,
-                                ),
-                              );
-                            },
-                            transitionDuration: const Duration(milliseconds: 150),
-                            reverseTransitionDuration: const Duration(milliseconds: 150),
-                          ),
-                        );
+                        _navigateToScreen(CallScreen(
+                          selectedMainCategory: widget.selectedMainCategory,
+                        ));
                       },
                       child: Container(
                         width: 46,
@@ -260,7 +269,7 @@ class BuyGoldScreen extends StatelessWidget {
                       _buildCoinIcon(size: 18),
                       const SizedBox(width: 4),
                       Text(
-                        '$currentGold',
+                        '${widget.currentGold}',
                         style: const TextStyle(
                           color: Colors.black87,
                           fontWeight: FontWeight.bold,
@@ -326,7 +335,7 @@ class BuyGoldScreen extends StatelessWidget {
                                 child: Text(
                                   'Ücretsiz Altın Kazan',
                                   style: TextStyle(
-                                    color: selectedColor[900],
+                                    color: widget.selectedColor[900],
                                     fontSize: 16,
                                     fontWeight: FontWeight.w600,
                                   ),
@@ -344,29 +353,15 @@ class BuyGoldScreen extends StatelessWidget {
                           child: InkWell(
                             borderRadius: BorderRadius.circular(23),
                             onTap: () {
-                              Navigator.push(
-                                context,
-                                PageRouteBuilder(
-                                  pageBuilder: (context, animation, secondaryAnimation) => PremiumScreen(
-                                    selectedMainCategory: selectedMainCategory,
-                                    selectedColor: selectedColor,
-                                    selectedIndex: selectedIndex,
-                                  ),
-                                  transitionsBuilder: (context, animation, secondaryAnimation, child) {
-                                    const begin = Offset(1.0, 0.0);
-                                    const end = Offset.zero;
-                                    const curve = Curves.easeInOut;
-                                    var tween = Tween(begin: begin, end: end).chain(CurveTween(curve: curve));
-                                    var offsetAnimation = animation.drive(tween);
-                                    return SlideTransition(position: offsetAnimation, child: child);
-                                  },
-                                  transitionDuration: const Duration(milliseconds: 300),
-                                ),
-                              );
+                              _navigateToScreen(PremiumScreen(
+                                selectedMainCategory: widget.selectedMainCategory,
+                                selectedColor: widget.selectedColor,
+                                selectedIndex: widget.selectedIndex,
+                              ));
                             },
                             child: Container(
                               decoration: BoxDecoration(
-                                color: selectedColor[900]!.withOpacity(0.95),
+                                color: widget.selectedColor[900]!.withOpacity(0.95),
                                 borderRadius: BorderRadius.circular(23),
                                 boxShadow: [
                                   BoxShadow(

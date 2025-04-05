@@ -55,169 +55,224 @@ class _NotificationsScreenState extends State<NotificationsScreen> {
     widget.onItemSelected(index);
     
     if (index == 3) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => ProfileScreen(
-            selectedMainCategory: widget.selectedMainCategory,
-            selectedColor: widget.selectedColor,
-          ),
-        ),
-      );
+      _navigateToScreen(ProfileScreen(
+        selectedMainCategory: widget.selectedMainCategory,
+        selectedColor: widget.selectedColor,
+      ));
     } else if (index == 2) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => MessagesScreen(
-            selectedMainCategory: widget.selectedMainCategory,
-            selectedColor: widget.selectedColor,
-          ),
-        ),
-      );
+      _navigateToScreen(MessagesScreen(
+        selectedMainCategory: widget.selectedMainCategory,
+        selectedColor: widget.selectedColor,
+      ));
     } else if (index == 1) {
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-          builder: (context) => CallScreen(
-            selectedCategory: widget.selectedMainCategory,
-          ),
-        ),
-      );
+      _navigateToScreen(CallScreen(
+        selectedMainCategory: widget.selectedMainCategory,
+      ));
     }
   }
 
-  Widget _buildNotificationItem(Map<String, dynamic> notification) {
-    return Container(
-      margin: const EdgeInsets.only(bottom: 8),
-      decoration: BoxDecoration(
-        color: notification['read'] ? Colors.white : widget.selectedColor.withOpacity(0.1),
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: [
-          BoxShadow(
-            color: Colors.black.withOpacity(0.05),
-            blurRadius: 10,
-            offset: const Offset(0, 2),
-          ),
-        ],
+  void _navigateToScreen(Widget screen) {
+    Navigator.push(
+      context,
+      PageRouteBuilder(
+        pageBuilder: (context, animation, secondaryAnimation) => screen,
+        transitionsBuilder: (context, animation, secondaryAnimation, child) {
+          const begin = Offset(0.0, 0.01);
+          const end = Offset.zero;
+          const curve = Curves.easeOutCubic;
+          var tween = Tween(begin: begin, end: end).chain(
+            CurveTween(curve: curve),
+          );
+          return SlideTransition(
+            position: animation.drive(tween),
+            child: FadeTransition(
+              opacity: animation,
+              child: child,
+            ),
+          );
+        },
+        transitionDuration: const Duration(milliseconds: 100),
+        reverseTransitionDuration: const Duration(milliseconds: 100),
       ),
-      child: Material(
-        color: Colors.transparent,
-        child: InkWell(
+    );
+  }
+
+  Widget _buildNotificationItem(Map<String, dynamic> notification) {
+    return Dismissible(
+      key: Key(notification['user']['name']),
+      direction: DismissDirection.endToStart,
+      background: Container(
+        decoration: BoxDecoration(
+          color: widget.selectedColor,
           borderRadius: BorderRadius.circular(16),
-          onTap: () {
-            setState(() {
-              notification['read'] = true;
-            });
-          },
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Row(
-              children: [
-                Stack(
-                  children: [
-                    Container(
-                      width: 48,
-                      height: 48,
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        gradient: LinearGradient(
-                          begin: Alignment.topLeft,
-                          end: Alignment.bottomRight,
-                          colors: [
-                            widget.selectedColor[400]!,
-                            widget.selectedColor[600]!,
-                          ],
-                        ),
-                        border: Border.all(
-                          color: Colors.white,
-                          width: 2,
-                        ),
-                        boxShadow: [
-                          BoxShadow(
-                            color: widget.selectedColor.withOpacity(0.2),
-                            blurRadius: 8,
-                            offset: const Offset(0, 2),
-                          ),
-                        ],
-                      ),
-                      child: const Icon(
-                        Icons.person,
-                        size: 26,
-                        color: Colors.white,
+        ),
+        alignment: Alignment.centerRight,
+        padding: const EdgeInsets.only(right: 20),
+        child: const Icon(
+          Icons.delete_outline,
+          color: Colors.white,
+          size: 24,
+        ),
+      ),
+      onDismissed: (direction) {
+        setState(() {
+          notifications.remove(notification);
+        });
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 8),
+        decoration: BoxDecoration(
+          color: notification['read'] ? Colors.white : widget.selectedColor.withOpacity(0.1),
+          borderRadius: BorderRadius.circular(16),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.05),
+              blurRadius: 10,
+              offset: const Offset(0, 2),
+            ),
+          ],
+        ),
+        child: Material(
+          color: Colors.transparent,
+          child: InkWell(
+            borderRadius: BorderRadius.circular(16),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text('Bildirimi Sil'),
+                  content: const Text('Bu bildirimi silmek istediğinize emin misiniz?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text('İptal'),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        setState(() {
+                          notifications.remove(notification);
+                        });
+                        Navigator.pop(context);
+                      },
+                      child: Text(
+                        'Sil',
+                        style: TextStyle(color: widget.selectedColor),
                       ),
                     ),
-                    Positioned(
-                      right: 0,
-                      bottom: 0,
-                      child: Container(
-                        width: 14,
-                        height: 14,
+                  ],
+                ),
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.all(16),
+              child: Row(
+                children: [
+                  Stack(
+                    children: [
+                      Container(
+                        width: 48,
+                        height: 48,
                         decoration: BoxDecoration(
                           shape: BoxShape.circle,
-                          color: notification['user']['status'].toLowerCase() == 'online'
-                              ? Colors.green[400]
-                              : Colors.grey[400],
+                          gradient: LinearGradient(
+                            begin: Alignment.topLeft,
+                            end: Alignment.bottomRight,
+                            colors: [
+                              widget.selectedColor[400]!,
+                              widget.selectedColor[600]!,
+                            ],
+                          ),
                           border: Border.all(
                             color: Colors.white,
                             width: 2,
                           ),
                           boxShadow: [
                             BoxShadow(
-                              color: Colors.black.withOpacity(0.1),
-                              blurRadius: 4,
+                              color: widget.selectedColor.withOpacity(0.2),
+                              blurRadius: 8,
                               offset: const Offset(0, 2),
                             ),
                           ],
                         ),
+                        child: const Icon(
+                          Icons.person,
+                          size: 26,
+                          color: Colors.white,
+                        ),
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(width: 16),
-                Expanded(
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Row(
-                        children: [
-                          Flexible(
-                            child: Text(
-                              notification['user']['name'],
-                              style: const TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w500,
+                      Positioned(
+                        right: 0,
+                        bottom: 0,
+                        child: Container(
+                          width: 14,
+                          height: 14,
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: notification['user']['status'].toLowerCase() == 'online'
+                                ? Colors.green[400]
+                                : Colors.grey[400],
+                            border: Border.all(
+                              color: Colors.white,
+                              width: 2,
+                            ),
+                            boxShadow: [
+                              BoxShadow(
+                                color: Colors.black.withOpacity(0.1),
+                                blurRadius: 4,
+                                offset: const Offset(0, 2),
                               ),
-                              maxLines: 1,
-                              overflow: TextOverflow.ellipsis,
-                            ),
+                            ],
                           ),
-                          const SizedBox(width: 4),
-                          Text(
-                            'seni dürttü',
-                            style: TextStyle(
-                              fontSize: 14,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 4),
-                      Row(
-                        children: [
-                          Text(
-                            notification['time'],
-                            style: TextStyle(
-                              fontSize: 12,
-                              color: Colors.grey[600],
-                            ),
-                          ),
-                        ],
+                        ),
                       ),
                     ],
                   ),
-                ),
-              ],
+                  const SizedBox(width: 16),
+                  Expanded(
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Row(
+                          children: [
+                            Flexible(
+                              child: Text(
+                                notification['user']['name'],
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                                maxLines: 1,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                            ),
+                            const SizedBox(width: 4),
+                            Text(
+                              'seni dürttü',
+                              style: TextStyle(
+                                fontSize: 14,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                        const SizedBox(height: 4),
+                        Row(
+                          children: [
+                            Text(
+                              notification['time'],
+                              style: TextStyle(
+                                fontSize: 12,
+                                color: Colors.grey[600],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-class CallStatusScreen extends StatelessWidget {
+class CallStatusScreen extends StatefulWidget {
   final MaterialColor selectedColor;
   final bool isBusy; // true for busy, false for no match found
 
@@ -11,9 +11,14 @@ class CallStatusScreen extends StatelessWidget {
   });
 
   @override
+  State<CallStatusScreen> createState() => _CallStatusScreenState();
+}
+
+class _CallStatusScreenState extends State<CallStatusScreen> {
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: selectedColor[900],
+      backgroundColor: widget.selectedColor[900],
       body: SafeArea(
         child: Center(
           child: Column(
@@ -32,7 +37,7 @@ class CallStatusScreen extends StatelessWidget {
                   ),
                 ),
                 child: Icon(
-                  isBusy ? Icons.phone_disabled : Icons.phone_missed,
+                  widget.isBusy ? Icons.phone_disabled : Icons.phone_missed,
                   size: 48,
                   color: Colors.white,
                 ),
@@ -40,7 +45,7 @@ class CallStatusScreen extends StatelessWidget {
               const SizedBox(height: 24),
               // Status Text
               Text(
-                isBusy ? 'Meşgul' : 'Eşleşme Bulunamadı',
+                widget.isBusy ? 'Meşgul' : 'Eşleşme Bulunamadı',
                 style: const TextStyle(
                   color: Colors.white,
                   fontSize: 24,
