@@ -385,7 +385,7 @@ class _PremiumScreenState extends State<PremiumScreen> {
                     const SizedBox(height: 24),
                     // Features List
                     ...features.map((feature) => Padding(
-                      padding: const EdgeInsets.only(bottom: 14, left: 48),
+                      padding: const EdgeInsets.only(bottom: 14, left: 24),
                       child: Row(
                         children: [
                           Icon(

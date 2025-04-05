@@ -23,8 +23,12 @@ class MessagesScreen extends StatefulWidget {
   _MessagesScreenState createState() => _MessagesScreenState();
 }
 
-class _MessagesScreenState extends State<MessagesScreen> {
+class _MessagesScreenState extends State<MessagesScreen> with SingleTickerProviderStateMixin {
   int _selectedIndex = 2;
+  int? _openedMessageIndex;
+  Map<int, double> _messageOffsets = {};
+  final double _maxSlideAmount = 80.0;
+  late AnimationController _animationController;
   
   final List<Map<String, dynamic>> messages = [
     {
@@ -65,6 +69,24 @@ class _MessagesScreenState extends State<MessagesScreen> {
     },
   ];
 
+  @override
+  void initState() {
+    super.initState();
+    _animationController = AnimationController(
+      vsync: this,
+      duration: const Duration(milliseconds: 200),
+    );
+    for (int i = 0; i < messages.length; i++) {
+      _messageOffsets[i] = 0.0;
+    }
+  }
+
+  @override
+  void dispose() {
+    _animationController.dispose();
+    super.dispose();
+  }
+
   void _onBuyGoldPressed() {
     Navigator.push(
       context,
@@ -97,7 +119,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
     );
   }
 
-  // Altın satın al seçeneğine tıklandığında
   void _handleBuyGoldOption() {
     _onBuyGoldPressed();
   }
@@ -155,7 +176,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
             padding: const EdgeInsets.all(12),
             child: Row(
               children: [
-                // Profile Picture
                 Stack(
                   children: [
                     Container(
@@ -293,6 +313,20 @@ class _MessagesScreenState extends State<MessagesScreen> {
     );
   }
 
+  void _closeMessage(int index) {
+    setState(() {
+      _messageOffsets[index] = 0;
+      _openedMessageIndex = null;
+    });
+  }
+
+  void _openMessage(int index) {
+    setState(() {
+      _messageOffsets[index] = -_maxSlideAmount;
+      _openedMessageIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -378,10 +412,253 @@ class _MessagesScreenState extends State<MessagesScreen> {
           ),
         ),
       ),
-      body: ListView.builder(
-        padding: const EdgeInsets.all(16),
-        itemCount: messages.length,
-        itemBuilder: (context, index) => _buildMessageItem(messages[index]),
+      body: Stack(
+        children: [
+          if (_openedMessageIndex != null)
+            Positioned.fill(
+              child: GestureDetector(
+                onTapDown: (_) => _closeMessage(_openedMessageIndex!),
+                child: Container(
+                  color: Colors.transparent,
+                ),
+              ),
+            ),
+          ListView.builder(
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            itemCount: messages.length,
+            itemBuilder: (context, index) {
+              final message = messages[index];
+              return GestureDetector(
+                behavior: HitTestBehavior.opaque,
+                onHorizontalDragUpdate: (details) {
+                  setState(() {
+                    if (_openedMessageIndex == index) {
+                      _messageOffsets[index] = _messageOffsets[index]! + details.delta.dx;
+                      if (_messageOffsets[index]! > 0) {
+                        _messageOffsets[index] = 0;
+                      }
+                      if (_messageOffsets[index]! > -20) {
+                        _closeMessage(index);
+                      }
+                    } else if (_openedMessageIndex == null) {
+                      _messageOffsets[index] = _messageOffsets[index]! + details.delta.dx;
+                      if (_messageOffsets[index]! < -_maxSlideAmount) {
+                        _messageOffsets[index] = -_maxSlideAmount;
+                      }
+                      if (_messageOffsets[index]! > 0) {
+                        _messageOffsets[index] = 0;
+                      }
+                      if (_messageOffsets[index]! < -60) {
+                        _openMessage(index);
+                      }
+                    }
+                  });
+                },
+                onHorizontalDragEnd: (details) {
+                  setState(() {
+                    if (_openedMessageIndex == index) {
+                      if (_messageOffsets[index]! > -40) {
+                        _closeMessage(index);
+                      } else {
+                        _messageOffsets[index] = -_maxSlideAmount;
+                      }
+                    } else {
+                      if (_messageOffsets[index]! < -40) {
+                        _openMessage(index);
+                      } else {
+                        _messageOffsets[index] = 0;
+                      }
+                    }
+                  });
+                },
+                child: Stack(
+                  children: [
+                    AnimatedContainer(
+                      duration: const Duration(milliseconds: 200),
+                      curve: Curves.easeOut,
+                      transform: Matrix4.translationValues(_messageOffsets[index] ?? 0, 0, 0),
+                      child: _buildMessageItem(message),
+                    ),
+                    if (_openedMessageIndex == index)
+                      Positioned.fill(
+                        child: Row(
+                          children: [
+                            Expanded(
+                              child: GestureDetector(
+                                onTap: () => _closeMessage(index),
+                                child: Container(
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.transparent,
+                                    borderRadius: BorderRadius.circular(12),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            AnimatedContainer(
+                              duration: const Duration(milliseconds: 200),
+                              curve: Curves.easeOut,
+                              width: -(_messageOffsets[index] ?? 0),
+                              margin: const EdgeInsets.only(bottom: 12),
+                              decoration: BoxDecoration(
+                                color: Colors.red[50],
+                                borderRadius: const BorderRadius.horizontal(
+                                  right: Radius.circular(12),
+                                ),
+                              ),
+                              child: GestureDetector(
+                                onTap: () {
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => Dialog(
+                                      backgroundColor: Colors.transparent,
+                                      child: Container(
+                                        width: double.infinity,
+                                        padding: const EdgeInsets.all(20),
+                                        decoration: BoxDecoration(
+                                          color: Colors.white,
+                                          borderRadius: BorderRadius.circular(20),
+                                          border: Border.all(
+                                            color: Colors.red[600]!,
+                                            width: 2,
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: Colors.black.withOpacity(0.1),
+                                              blurRadius: 20,
+                                              offset: const Offset(0, 10),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            Text(
+                                              'Sohbeti Sil',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 18,
+                                                fontWeight: FontWeight.w600,
+                                                color: Colors.grey[900],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 8),
+                                            Text(
+                                              'Bu sohbeti silmek istediğinizden emin misiniz?',
+                                              textAlign: TextAlign.center,
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Colors.grey[600],
+                                              ),
+                                            ),
+                                            const SizedBox(height: 24),
+                                            Row(
+                                              children: [
+                                                Expanded(
+                                                  child: Material(
+                                                    color: Colors.transparent,
+                                                    child: InkWell(
+                                                      onTap: () => Navigator.pop(context),
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      child: Container(
+                                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.grey[100],
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        child: Text(
+                                                          'Vazgeç',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.grey[800],
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                                const SizedBox(width: 12),
+                                                Expanded(
+                                                  child: Material(
+                                                    color: Colors.transparent,
+                                                    child: InkWell(
+                                                      onTap: () {
+                                                        setState(() {
+                                                          messages.removeAt(index);
+                                                          _closeMessage(index);
+                                                        });
+                                                        Navigator.pop(context);
+                                                      },
+                                                      borderRadius: BorderRadius.circular(12),
+                                                      child: Container(
+                                                        padding: const EdgeInsets.symmetric(vertical: 14),
+                                                        decoration: BoxDecoration(
+                                                          color: Colors.red[600],
+                                                          borderRadius: BorderRadius.circular(12),
+                                                        ),
+                                                        child: const Text(
+                                                          'Sil',
+                                                          textAlign: TextAlign.center,
+                                                          style: TextStyle(
+                                                            fontSize: 16,
+                                                            fontWeight: FontWeight.w500,
+                                                            color: Colors.white,
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  );
+                                },
+                                child: Container(
+                                  width: 80,
+                                  margin: const EdgeInsets.only(bottom: 12),
+                                  decoration: BoxDecoration(
+                                    color: Colors.red[50],
+                                    borderRadius: const BorderRadius.horizontal(
+                                      right: Radius.circular(12),
+                                    ),
+                                  ),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.center,
+                                    children: [
+                                      Icon(
+                                        Icons.delete,
+                                        color: Colors.red[600],
+                                        size: 24,
+                                      ),
+                                      const SizedBox(height: 4),
+                                      Text(
+                                        'Sil',
+                                        style: TextStyle(
+                                          color: Colors.red[600],
+                                          fontSize: 12,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ],
       ),
       bottomNavigationBar: BottomNavBar(
         selectedIndex: _selectedIndex,
@@ -402,7 +679,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
     });
     
     if (index == 3) {
-      // Profile icon tapped
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -432,7 +708,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
         ),
       );
     } else if (index == 1) {
-      // Call icon tapped
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
@@ -461,7 +736,6 @@ class _MessagesScreenState extends State<MessagesScreen> {
         ),
       );
     } else if (index == 0) {
-      // Notifications icon tapped
       Navigator.pushReplacement(
         context,
         PageRouteBuilder(
