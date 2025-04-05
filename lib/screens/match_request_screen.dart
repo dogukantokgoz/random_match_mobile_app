@@ -16,10 +16,12 @@ class MatchRequestScreen extends StatefulWidget {
 }
 
 class _MatchRequestScreenState extends State<MatchRequestScreen> {
+  bool _isWaiting = false;
+
   @override
   Widget build(BuildContext context) {
     const double buttonWidth = 100.0;
-    const double totalButtonsWidth = (buttonWidth * 2) + 16.0; // 2 buttons with gap
+    const double totalButtonsWidth = (buttonWidth * 2) + 8.0; // Reduced from 16 to 8
     const double cardWidth = totalButtonsWidth;
 
     return Scaffold(
@@ -113,7 +115,7 @@ class _MatchRequestScreenState extends State<MatchRequestScreen> {
                           ],
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(height: 12),
                       // User Info
                       SizedBox(
                         width: cardWidth - 20,
@@ -132,12 +134,12 @@ class _MatchRequestScreenState extends State<MatchRequestScreen> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              'Online',
+                              "Hey there! I'm using Random Match",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey[600],
                               ),
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                             ),
@@ -148,69 +150,63 @@ class _MatchRequestScreenState extends State<MatchRequestScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
               // Action Buttons
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  _buildActionButton(
-                    icon: Icons.close,
-                    label: 'Reddet',
-                    onTap: () => Navigator.pop(context),
-                    height: 50,
+              if (!_isWaiting)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildActionButton(
+                      icon: Icons.close,
+                      label: 'Reddet',
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      height: 80,
+                    ),
+                    const SizedBox(width: 4),
+                    _buildActionButton(
+                      icon: Icons.check,
+                      label: 'Kabul Et',
+                      onTap: () {
+                        setState(() {
+                          _isWaiting = true;
+                        });
+                        Future.delayed(const Duration(seconds: 2), () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => MatchScreen(
+                                selectedMainCategory: widget.selectedMainCategory,
+                                selectedColor: widget.selectedColor,
+                                user: {
+                                  'name': 'Test User',
+                                  'level': 5,
+                                  'likes': 128,
+                                  'status': 'online',
+                                  'bio': 'Hello! I love music and traveling. Looking for new friends to chat with!',
+                                },
+                              ),
+                            ),
+                          );
+                        });
+                      },
+                      height: 80,
+                    ),
+                  ],
+                ),
+              if (_isWaiting)
+                const Text(
+                  'Karşı taraf bekleniyor...',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 16,
+                    fontWeight: FontWeight.w500,
                   ),
-                  const SizedBox(width: 16),
-                  _buildActionButton(
-                    icon: Icons.check,
-                    label: 'Kabul Et',
-                    onTap: () {
-                      _navigateToScreen(
-                        MatchScreen(
-                          selectedMainCategory: widget.selectedMainCategory,
-                          selectedColor: widget.selectedColor,
-                          user: {
-                            'name': 'John Doe',
-                            'level': 5,
-                            'likes': 123,
-                            'status': 'online',
-                            'bio': 'Merhaba! Ben müzik ve seyahat tutkunuyum. Yeni arkadaşlar edinmek için buradayım!',
-                          },
-                        ),
-                      );
-                    },
-                    height: 50,
-                  ),
-                ],
-              ),
+                ),
             ],
           ),
         ),
-      ),
-    );
-  }
-
-  void _navigateToScreen(Widget screen) {
-    Navigator.push(
-      context,
-      PageRouteBuilder(
-        pageBuilder: (context, animation, secondaryAnimation) => screen,
-        transitionsBuilder: (context, animation, secondaryAnimation, child) {
-          const begin = Offset(0.0, 0.01);
-          const end = Offset.zero;
-          const curve = Curves.easeOutCubic;
-          var tween = Tween(begin: begin, end: end).chain(
-            CurveTween(curve: curve),
-          );
-          return SlideTransition(
-            position: animation.drive(tween),
-            child: FadeTransition(
-              opacity: animation,
-              child: child,
-            ),
-          );
-        },
-        transitionDuration: const Duration(milliseconds: 100),
-        reverseTransitionDuration: const Duration(milliseconds: 100),
       ),
     );
   }

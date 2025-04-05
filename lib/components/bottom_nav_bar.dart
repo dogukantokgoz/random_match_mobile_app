@@ -14,6 +14,7 @@ class BottomNavBar extends StatelessWidget {
 
   Widget _buildNavItem(IconData icon, int index) {
     final isSelected = selectedIndex == index;
+    final bool showDot = index == 0 || index == 2 || index == 3; // Bildirim, mesaj ve profil için nokta
     
     return GestureDetector(
       onTap: () => onItemSelected(index),
@@ -23,10 +24,32 @@ class BottomNavBar extends StatelessWidget {
           color: isSelected ? selectedColor : Colors.transparent,
           borderRadius: BorderRadius.circular(20),
         ),
-        child: Icon(
-          icon,
-          color: isSelected ? Colors.white : Colors.grey[600],
-          size: 28,
+        child: Stack(
+          clipBehavior: Clip.none,
+          children: [
+            Icon(
+              icon,
+              color: isSelected ? Colors.white : Colors.grey[600],
+              size: 28,
+            ),
+            if (showDot)
+              Positioned(
+                right: -4,
+                top: -4,
+                child: Container(
+                  width: 8,
+                  height: 8,
+                  decoration: BoxDecoration(
+                    color: isSelected ? Colors.white : selectedColor[600],
+                    shape: BoxShape.circle,
+                    border: Border.all(
+                      color: Colors.white,
+                      width: 1.5,
+                    ),
+                  ),
+                ),
+              ),
+          ],
         ),
       ),
     );

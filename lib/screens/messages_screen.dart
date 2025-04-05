@@ -424,7 +424,7 @@ class _MessagesScreenState extends State<MessagesScreen> with SingleTickerProvid
               ),
             ),
           ListView.builder(
-            padding: const EdgeInsets.symmetric(horizontal: 16),
+            padding: const EdgeInsets.all(16),
             itemCount: messages.length,
             itemBuilder: (context, index) {
               final message = messages[index];

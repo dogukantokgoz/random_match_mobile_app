@@ -358,13 +358,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                       color: Colors.transparent,
                       child: InkWell(
                         onTap: () => Navigator.pop(context),
-                        borderRadius: BorderRadius.circular(24),
+                        borderRadius: BorderRadius.circular(12),
                         child: Container(
                           width: 32,
                           height: 32,
                           decoration: BoxDecoration(
                             color: Colors.white,
-                            shape: BoxShape.circle,
+                            borderRadius: BorderRadius.circular(12),
                             border: Border.all(
                               color: widget.selectedColor[900]!,
                               width: 2,
@@ -528,13 +528,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   color: Colors.transparent,
                   child: InkWell(
                     onTap: () => Navigator.pop(context),
-                    borderRadius: BorderRadius.circular(24),
+                    borderRadius: BorderRadius.circular(12),
                     child: Container(
                       width: 32,
                       height: 32,
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        shape: BoxShape.circle,
+                        borderRadius: BorderRadius.circular(12),
                         border: Border.all(
                           color: widget.selectedColor[900]!,
                           width: 2,

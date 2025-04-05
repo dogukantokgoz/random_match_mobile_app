@@ -272,7 +272,7 @@ class _EndMatchScreenState extends State<EndMatchScreen> {
   @override
   Widget build(BuildContext context) {
     final double buttonWidth = 100.0;
-    final double totalButtonsWidth = (buttonWidth * 2) + 16.0; // 2 buttons with gap
+    final double totalButtonsWidth = (buttonWidth * 2) + 4.0; // Reduced gap to 4
     final double cardWidth = totalButtonsWidth;
 
     return Scaffold(
@@ -366,7 +366,7 @@ class _EndMatchScreenState extends State<EndMatchScreen> {
                           ],
                         ),
                       ),
-                      const Spacer(),
+                      const SizedBox(height: 12),
                       // User Info
                       SizedBox(
                         width: cardWidth - 20,
@@ -385,12 +385,12 @@ class _EndMatchScreenState extends State<EndMatchScreen> {
                             ),
                             const SizedBox(height: 2),
                             Text(
-                              widget.user['status'] ?? 'Offline',
+                              widget.user['bio'] ?? "Hey there! I'm using Random Match",
                               style: TextStyle(
                                 fontSize: 12,
                                 color: Colors.grey[600],
                               ),
-                              maxLines: 1,
+                              maxLines: 2,
                               overflow: TextOverflow.ellipsis,
                               textAlign: TextAlign.center,
                             ),
@@ -401,7 +401,7 @@ class _EndMatchScreenState extends State<EndMatchScreen> {
                   ),
                 ),
               ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
               // Action Buttons
               if (_showActionButtons)
                 Row(
@@ -416,8 +416,9 @@ class _EndMatchScreenState extends State<EndMatchScreen> {
                           _showDislikeOptions = true;
                         });
                       },
+                      height: 80,
                     ),
-                    const SizedBox(width: 16),
+                    const SizedBox(width: 4),
                     _buildActionButton(
                       icon: Icons.favorite,
                       label: 'Like',
@@ -427,58 +428,60 @@ class _EndMatchScreenState extends State<EndMatchScreen> {
                           _showLikeOptions = true;
                         });
                       },
+                      height: 80,
                     ),
                   ],
                 ),
               if (_showDislikeOptions)
-                Column(
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        _buildActionButton(
-                          icon: Icons.report,
-                          label: 'Şikayet Et',
-                          onTap: () {
-                            _showConfirmationDialog(
-                              title: 'Şikayet Et',
-                              content: 'Bu kullanıcıyı şikayet etmek istediğinize emin misiniz?',
-                              onConfirm: () {
-                                // Handle report
-                                Navigator.pop(context);
-                              },
-                            );
+                    _buildActionButton(
+                      icon: Icons.report,
+                      label: 'Şikayet Et',
+                      onTap: () {
+                        _showConfirmationDialog(
+                          title: 'Şikayet Et',
+                          content: 'Bu kullanıcıyı şikayet etmek istediğinize emin misiniz?',
+                          onConfirm: () {
+                            Navigator.pop(context);
                           },
-                        ),
-                        const SizedBox(width: 16),
-                        _buildActionButton(
-                          icon: Icons.block,
-                          label: 'Engelle',
-                          onTap: () {
-                            _showConfirmationDialog(
-                              title: 'Engelle',
-                              content: 'Bu kullanıcıyı engellemek istediğinize emin misiniz?',
-                              onConfirm: () {
-                                // Handle block
-                                Navigator.pop(context);
-                              },
-                            );
+                        );
+                      },
+                      height: 80,
+                    ),
+                    const SizedBox(width: 4),
+                    _buildActionButton(
+                      icon: Icons.block,
+                      label: 'Engelle',
+                      onTap: () {
+                        _showConfirmationDialog(
+                          title: 'Engelle',
+                          content: 'Bu kullanıcıyı engellemek istediğinize emin misiniz?',
+                          onConfirm: () {
+                            Navigator.pop(context);
                           },
-                        ),
-                      ],
+                        );
+                      },
+                      height: 80,
                     ),
                   ],
                 ),
               if (_showLikeOptions)
-                _buildActionButton(
-                  icon: Icons.person_add,
-                  label: 'Arkadaş Ekle',
-                  onTap: () {
-                    // Handle add friend
-                    Navigator.pop(context);
-                  },
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    _buildActionButton(
+                      icon: Icons.person_add,
+                      label: 'Arkadaş Ekle',
+                      onTap: () {
+                        Navigator.pop(context);
+                      },
+                      height: 80,
+                    ),
+                  ],
                 ),
-              const SizedBox(height: 24),
+              const SizedBox(height: 12),
               // Bottom Buttons
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
@@ -487,17 +490,17 @@ class _EndMatchScreenState extends State<EndMatchScreen> {
                     icon: Icons.monetization_on,
                     label: 'Tekrar Ara',
                     onTap: _showGoldConfirmationDialog,
-                    height: 50,
+                    height: 80,
                     showGoldValue: true,
                   ),
-                  const SizedBox(width: 16),
+                  const SizedBox(width: 4),
                   _buildActionButton(
                     icon: Icons.arrow_forward,
                     label: 'Geç',
                     onTap: () {
                       Navigator.pop(context);
                     },
-                    height: 50,
+                    height: 80,
                   ),
                 ],
               ),
