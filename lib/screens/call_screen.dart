@@ -12,6 +12,7 @@ import 'call_status_screen.dart';
 import '../components/call_request_widget.dart';
 import '../components/outgoing_call_widget.dart';
 import 'match_request_screen.dart';
+import 'premium_screen.dart';
 
 class CallScreen extends StatefulWidget {
   final int currentGold;
@@ -178,14 +179,21 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
       animation: controller,
       builder: (context, child) {
         return Container(
-          width: 120 + (controller.value * 80),
-          height: 120 + (controller.value * 80),
+          width: 120 + (controller.value * 100),
+          height: 120 + (controller.value * 100),
           decoration: BoxDecoration(
             shape: BoxShape.circle,
             border: Border.all(
-              color: Colors.grey.withOpacity(0.3 * (1 - controller.value)),
-              width: 4,
+              color: Colors.white.withOpacity(0.2 * (1 - controller.value)),
+              width: 3,
             ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.white.withOpacity(0.1 * (1 - controller.value)),
+                blurRadius: 10,
+                spreadRadius: 5,
+              ),
+            ],
           ),
         );
       },
@@ -195,15 +203,16 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
   Widget _buildTopButton({
     required Widget child,
     VoidCallback? onTap,
+    double? width,
   }) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
         height: 40,
         padding: const EdgeInsets.symmetric(horizontal: 12),
-        constraints: const BoxConstraints(
-          minWidth: 150,
-          maxWidth: 150,
+        constraints: BoxConstraints(
+          minWidth: width ?? 150,
+          maxWidth: width ?? 150,
         ),
         decoration: BoxDecoration(
           color: Colors.white.withOpacity(0.15),
@@ -311,8 +320,8 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                   Positioned(
                     left: 16,
                     top: 16,
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         _buildTopButton(
                           child: Row(
@@ -343,6 +352,27 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                 _selectedCategory = result as String;
                               });
                             }
+                          },
+                        ),
+                        const SizedBox(height: 8),
+                        _buildTopButton(
+                          width: 75,
+                          child: Icon(
+                            Icons.workspace_premium,
+                            color: Colors.amber,
+                            size: 20,
+                          ),
+                          onTap: () {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => PremiumScreen(
+                                  selectedMainCategory: _selectedCategory,
+                                  selectedColor: currentCategoryColor,
+                                  selectedIndex: _selectedIndex,
+                                ),
+                              ),
+                            );
                           },
                         ),
                       ],
@@ -478,59 +508,42 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Stack(
-                          alignment: Alignment.center,
-                          children: [
-                            if (_isSearching) ...[
-                              _buildSearchRing(_animationController3),
-                              _buildSearchRing(_animationController2),
-                              _buildSearchRing(_animationController1),
-                            ],
-                            GestureDetector(
-                              onTap: _toggleSearch,
-                              child: Container(
-                                width: 120,
-                                height: 120,
-                                decoration: BoxDecoration(
-                                  shape: BoxShape.circle,
-                                  color: Colors.white,
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.2),
-                                      spreadRadius: 5,
-                                      blurRadius: 15,
-                                      offset: const Offset(0, 3),
-                                    ),
-                                  ],
-                                ),
-                                child: Icon(
-                                  Icons.call,
-                                  size: 50,
-                                  color: currentCategoryColor,
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 8),
-                        AnimatedBuilder(
-                          animation: _textSlideAnimation,
-                          builder: (context, child) {
-                            return Transform.translate(
-                              offset: Offset(0, 24 + (_textSlideAnimation.value * 8)),
-                              child: Opacity(
-                                opacity: 1.0,
-                                child: Text(
-                                  _isSearching ? 'Aranıyor...' : 'Ara',
-                                  style: const TextStyle(
+                        SizedBox(
+                          height: 180,
+                          child: Stack(
+                            alignment: Alignment.center,
+                            children: [
+                              if (_isSearching) ...[
+                                _buildSearchRing(_animationController3),
+                                _buildSearchRing(_animationController2),
+                                _buildSearchRing(_animationController1),
+                              ],
+                              GestureDetector(
+                                onTap: _toggleSearch,
+                                child: Container(
+                                  width: 120,
+                                  height: 120,
+                                  decoration: BoxDecoration(
+                                    shape: BoxShape.circle,
                                     color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w500,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.2),
+                                        spreadRadius: 5,
+                                        blurRadius: 15,
+                                        offset: const Offset(0, 3),
+                                      ),
+                                    ],
+                                  ),
+                                  child: Icon(
+                                    Icons.call,
+                                    size: 50,
+                                    color: currentCategoryColor,
                                   ),
                                 ),
                               ),
-                            );
-                          },
+                            ],
+                          ),
                         ),
                       ],
                     ),

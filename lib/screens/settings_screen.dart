@@ -788,10 +788,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: widget.selectedColor[900]!.withOpacity(0.95),
+            color: Colors.grey[400],
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.white.withOpacity(0.2),
+              color: Colors.grey[500]!,
               width: 1,
             ),
             boxShadow: [
@@ -807,7 +807,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               if (icon != null)
                 Icon(
                   icon,
-                  color: iconColor ?? Colors.white,
+                  color: iconColor ?? Colors.grey[700],
                   size: 24,
                 )
               else if (leading != null)
@@ -819,13 +819,13 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   style: TextStyle(
                     fontSize: 16,
                     fontWeight: FontWeight.w500,
-                    color: Colors.white,
+                    color: Colors.grey[800],
                   ),
                 ),
               ),
               Icon(
                 Icons.chevron_right,
-                color: Colors.white.withOpacity(0.7),
+                color: Colors.grey[500],
                 size: 24,
               ),
             ],
