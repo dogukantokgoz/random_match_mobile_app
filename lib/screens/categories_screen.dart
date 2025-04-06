@@ -9,14 +9,14 @@ class CategoriesScreen extends StatelessWidget {
   final String selectedCategory;
 
   final List<Map<String, dynamic>> categories = const [
-    {'name': 'Genel', 'color': Colors.blue, 'icon': Icons.public},
-    {'name': 'Müzik', 'color': Colors.purple, 'icon': Icons.music_note},
-    {'name': 'Spor', 'color': Colors.green, 'icon': Icons.sports_soccer},
-    {'name': 'Oyun', 'color': Colors.deepOrange, 'icon': Icons.sports_esports},
-    {'name': 'Film', 'color': Colors.red, 'icon': Icons.movie},
-    {'name': 'Seyahat', 'color': Colors.teal, 'icon': Icons.flight},
-    {'name': 'Yemek', 'color': Colors.pink, 'icon': Icons.restaurant},
-    {'name': 'Sanat', 'color': Colors.indigo, 'icon': Icons.palette},
+    {'name': 'Genel', 'color': Colors.blue, 'icon': Icons.public, 'online': 1988},
+    {'name': 'Müzik', 'color': Colors.purple, 'icon': Icons.music_note, 'online': 550},
+    {'name': 'Spor', 'color': Colors.green, 'icon': Icons.sports_soccer, 'online': 320},
+    {'name': 'Oyun', 'color': Colors.deepOrange, 'icon': Icons.sports_esports, 'online': 780},
+    {'name': 'Film', 'color': Colors.red, 'icon': Icons.movie, 'online': 450},
+    {'name': 'Seyahat', 'color': Colors.teal, 'icon': Icons.flight, 'online': 15},
+    {'name': 'Yemek', 'color': Colors.pink, 'icon': Icons.restaurant, 'online': 120},
+    {'name': 'Sanat', 'color': Colors.indigo, 'icon': Icons.palette, 'online': 85},
   ];
 
   MaterialColor _getCategoryColor(String categoryName) {
@@ -139,6 +139,15 @@ class CategoriesScreen extends StatelessWidget {
                         ),
                       ),
                       const Spacer(),
+                      Text(
+                        '${category['online']} çevrimiçi',
+                        style: TextStyle(
+                          color: Colors.white.withOpacity(0.7),
+                          fontSize: 14,
+                          fontWeight: FontWeight.w500,
+                        ),
+                      ),
+                      const SizedBox(width: 8),
                       if (isSelected)
                         Container(
                           padding: const EdgeInsets.all(8),

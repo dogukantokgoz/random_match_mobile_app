@@ -95,25 +95,46 @@ class _MatchScreenState extends State<MatchScreen> with SingleTickerProviderStat
   void _showEmojiPicker() {
     showDialog(
       context: context,
-      builder: (context) => AlertDialog(
-        title: const Text('Emoji Seç'),
-        content: Wrap(
-          spacing: 16,
-          children: ['😊', '😍', '😂', '👋', '❤️'].map((emoji) {
-            return InkWell(
-              onTap: () {
-                Navigator.pop(context);
-                setState(() {
-                  currentEmoji = emoji;
-                });
-                _emojiAnimationController.forward(from: 0);
-              },
-              child: Text(
-                emoji,
-                style: const TextStyle(fontSize: 32),
+      builder: (context) => Dialog(
+        backgroundColor: Colors.transparent,
+        child: Container(
+          width: double.infinity,
+          padding: const EdgeInsets.all(20),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(20),
+            border: Border.all(
+              color: widget.selectedColor[900]!,
+              width: 2,
+            ),
+            boxShadow: [
+              BoxShadow(
+                color: Colors.black.withOpacity(0.1),
+                blurRadius: 20,
+                offset: const Offset(0, 10),
               ),
-            );
-          }).toList(),
+            ],
+          ),
+          child: Wrap(
+            spacing: 16,
+            runSpacing: 16,
+            alignment: WrapAlignment.center,
+            children: ['😊', '😍', '😂', '👋', '❤️'].map((emoji) {
+              return InkWell(
+                onTap: () {
+                  Navigator.pop(context);
+                  setState(() {
+                    currentEmoji = emoji;
+                  });
+                  _emojiAnimationController.forward(from: 0);
+                },
+                child: Text(
+                  emoji,
+                  style: const TextStyle(fontSize: 32),
+                ),
+              );
+            }).toList(),
+          ),
         ),
       ),
     );
