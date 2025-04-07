@@ -13,6 +13,7 @@ import '../components/call_request_widget.dart';
 import '../components/outgoing_call_widget.dart';
 import 'match_request_screen.dart';
 import 'premium_screen.dart';
+import '../components/profile_card.dart';
 
 class CallScreen extends StatefulWidget {
   final int currentGold;
@@ -35,8 +36,10 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
   late AnimationController _animationController1;
   late AnimationController _animationController2;
   late AnimationController _animationController3;
-  late AnimationController _textAnimationController;
-  late Animation<double> _textSlideAnimation;
+  late AnimationController _callButtonController;
+  late Animation<double> _callButtonAnimation;
+  late Animation<double> _callIconAnimation;
+  late Animation<double> _callIconFloatAnimation;
   bool _showCallRequest = false;
   bool _showOutgoingCall = false;
   
@@ -71,18 +74,44 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
       duration: const Duration(milliseconds: 1500),
       vsync: this,
     );
-    _textAnimationController = AnimationController(
-      duration: const Duration(milliseconds: 500),
+    _callButtonController = AnimationController(
+      duration: const Duration(milliseconds: 3000),
       vsync: this,
     );
 
-    _textSlideAnimation = Tween<double>(
+    _callButtonAnimation = Tween<double>(
+      begin: 1.0,
+      end: 1.15,
+    ).animate(CurvedAnimation(
+      parent: _callButtonController,
+      curve: Curves.easeInOut,
+    ));
+
+    _callIconAnimation = Tween<double>(
+      begin: 0.0,
+      end: 2 * 3.14159, // 360 derece
+    ).animate(CurvedAnimation(
+      parent: _callButtonController,
+      curve: Curves.easeInOut,
+    ));
+
+    _callIconFloatAnimation = Tween<double>(
       begin: 0.0,
       end: 1.0,
     ).animate(CurvedAnimation(
-      parent: _textAnimationController,
-      curve: Curves.easeOut,
+      parent: _callButtonController,
+      curve: Curves.easeInOut,
     ));
+
+    _callButtonController.addStatusListener((status) {
+      if (status == AnimationStatus.completed) {
+        _callButtonController.reverse();
+      } else if (status == AnimationStatus.dismissed) {
+        _callButtonController.forward();
+      }
+    });
+
+    _callButtonController.forward();
 
     // Animasyonları sırayla başlat
     _animationController1.addStatusListener((status) {
@@ -110,7 +139,7 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
     _animationController1.dispose();
     _animationController2.dispose();
     _animationController3.dispose();
-    _textAnimationController.dispose();
+    _callButtonController.dispose();
     super.dispose();
   }
 
@@ -147,14 +176,15 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
       _isSearching = !_isSearching;
       if (_isSearching) {
         _startSearchAnimation();
+        _callButtonController.stop();
       } else {
         _stopSearchAnimation();
+        _callButtonController.forward();
       }
     });
   }
 
   void _startSearchAnimation() {
-    _textAnimationController.forward();
     _animationController1.forward();
     Future.delayed(const Duration(milliseconds: 500), () {
       if (_isSearching) _animationController2.forward();
@@ -171,7 +201,6 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
     _animationController1.reset();
     _animationController2.reset();
     _animationController3.reset();
-    _textAnimationController.reset();
   }
 
   Widget _buildSearchRing(AnimationController controller) {
@@ -390,6 +419,7 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                         _buildTopButton(
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.center,
+                            mainAxisSize: MainAxisSize.min,
                             children: const [
                               Icon(
                                 Icons.star,
@@ -404,7 +434,6 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                   fontWeight: FontWeight.bold,
                                 ),
                               ),
-                              SizedBox(width: 30),
                             ],
                           ),
                         ),
@@ -432,14 +461,18 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                               GestureDetector(
                                 onTap: _navigateToBuyGold,
                                 child: Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     _buildCoinIcon(size: 20),
-                                    SizedBox(width: 4),
-                                    Text(
-                                      '${widget.currentGold}',
-                                      style: TextStyle(
-                                        color: Colors.white,
-                                        fontWeight: FontWeight.bold,
+                                    Container(
+                                      width: 24,
+                                      alignment: Alignment.center,
+                                      child: Text(
+                                        '40',
+                                        style: TextStyle(
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
                                       ),
                                     ),
                                   ],
@@ -451,13 +484,12 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                         const SizedBox(height: 8),
                         // Stats Container
                         _buildTopButton(
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              GestureDetector(
-                                onTap: _navigateToBuyGold,
-                                child: Row(
+                          child: Padding(
+                            padding: EdgeInsets.symmetric(horizontal: 12),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Row(
                                   children: [
                                     Icon(
                                       Icons.person_add,
@@ -474,18 +506,15 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                     ),
                                   ],
                                 ),
-                              ),
-                              SizedBox(width: 16),
-                              GestureDetector(
-                                onTap: _navigateToBuyGold,
-                                child: Row(
+                                Row(
+                                  mainAxisSize: MainAxisSize.min,
                                   children: [
                                     Icon(
                                       Icons.timer,
                                       color: Colors.white,
                                       size: 20,
                                     ),
-                                    SizedBox(width: 4),
+                                    SizedBox(width: 2),
                                     Text(
                                       '2',
                                       style: TextStyle(
@@ -495,8 +524,8 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                     ),
                                   ],
                                 ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -518,29 +547,70 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                 _buildSearchRing(_animationController2),
                                 _buildSearchRing(_animationController1),
                               ],
-                              GestureDetector(
-                                onTap: _toggleSearch,
-                                child: Container(
-                                  width: 120,
-                                  height: 120,
-                                  decoration: BoxDecoration(
-                                    shape: BoxShape.circle,
-                                    color: Colors.white,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Colors.black.withOpacity(0.2),
-                                        spreadRadius: 5,
-                                        blurRadius: 15,
-                                        offset: const Offset(0, 3),
+                              AnimatedBuilder(
+                                animation: _callButtonController,
+                                builder: (context, child) {
+                                  return Transform.scale(
+                                    scale: _isSearching ? 1.0 : _callButtonAnimation.value,
+                                    child: GestureDetector(
+                                      onTap: _toggleSearch,
+                                      child: Container(
+                                        width: 120,
+                                        height: 120,
+                                        decoration: BoxDecoration(
+                                          shape: BoxShape.circle,
+                                          gradient: LinearGradient(
+                                            begin: Alignment.topLeft,
+                                            end: Alignment.bottomRight,
+                                            colors: [
+                                              Colors.white,
+                                              Colors.white.withOpacity(0.9),
+                                            ],
+                                          ),
+                                          boxShadow: [
+                                            BoxShadow(
+                                              color: currentCategoryColor.withOpacity(0.3),
+                                              spreadRadius: 5,
+                                              blurRadius: 15,
+                                              offset: const Offset(0, 3),
+                                            ),
+                                          ],
+                                        ),
+                                        child: Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            if (!_isSearching)
+                                              AnimatedBuilder(
+                                                animation: _callIconAnimation,
+                                                builder: (context, child) {
+                                                  return Transform.translate(
+                                                    offset: Offset(
+                                                      0,
+                                                      -10 * _callIconFloatAnimation.value,
+                                                    ),
+                                                    child: Transform.rotate(
+                                                      angle: _callIconAnimation.value,
+                                                      child: Icon(
+                                                        Icons.call,
+                                                        size: 50,
+                                                        color: currentCategoryColor,
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
+                                              )
+                                            else
+                                              Icon(
+                                                Icons.call,
+                                                size: 50,
+                                                color: currentCategoryColor,
+                                              ),
+                                          ],
+                                        ),
                                       ),
-                                    ],
-                                  ),
-                                  child: Icon(
-                                    Icons.call,
-                                    size: 50,
-                                    color: currentCategoryColor,
-                                  ),
-                                ),
+                                    ),
+                                  );
+                                },
                               ),
                             ],
                           ),
@@ -780,6 +850,60 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                               ),
                               child: const Text(
                                 'Test Eşleşme İsteği',
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 12,
+                                  fontWeight: FontWeight.w500,
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                        const SizedBox(height: 8),
+                        Material(
+                          color: Colors.transparent,
+                          child: InkWell(
+                            borderRadius: BorderRadius.circular(15),
+                            onTap: () {
+                              showDialog(
+                                context: context,
+                                builder: (context) => Dialog(
+                                  backgroundColor: Colors.transparent,
+                                  child: Column(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      ProfileCard(
+                                        name: 'John Doe',
+                                        imageUrl: 'assets/images/profile.png',
+                                        level: 5,
+                                        likes: 128,
+                                        isPremium: true,
+                                      ),
+                                      const SizedBox(height: 16),
+                                      ProfileCard(
+                                        name: 'Jane Smith',
+                                        imageUrl: 'assets/images/profile.png',
+                                        level: 3,
+                                        likes: 64,
+                                        isPremium: false,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              );
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                              decoration: BoxDecoration(
+                                color: Colors.white.withOpacity(0.15),
+                                borderRadius: BorderRadius.circular(15),
+                                border: Border.all(
+                                  color: Colors.white.withOpacity(0.2),
+                                  width: 1,
+                                ),
+                              ),
+                              child: const Text(
+                                'Test Profile Cards',
                                 style: TextStyle(
                                   color: Colors.white,
                                   fontSize: 12,

@@ -495,12 +495,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
         insetPadding: const EdgeInsets.symmetric(horizontal: 40),
         child: Container(
           width: double.infinity,
-          padding: const EdgeInsets.fromLTRB(20, 20, 20, 20),
+          padding: const EdgeInsets.all(16),
           decoration: BoxDecoration(
             color: Colors.white,
             borderRadius: BorderRadius.circular(24),
             border: Border.all(
-              color: currentCategoryColor[900]!,
+              color: widget.selectedColor[900]!,
               width: 2,
             ),
           ),
@@ -508,42 +508,26 @@ class _ProfileScreenState extends State<ProfileScreen> {
             mainAxisSize: MainAxisSize.min,
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                  color: Colors.grey[50],
-                  borderRadius: BorderRadius.circular(16),
-                  border: Border.all(
-                    color: Colors.grey[300]!,
-                    width: 1,
+              Text(
+                "$name kullanıcısını tekrar eklemek istediğinize emin misiniz?",
+                style: const TextStyle(
+                  fontSize: 16,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(height: 12),
+              Row(
+                children: [
+                  _buildCoinIcon(size: 20),
+                  const SizedBox(width: 6),
+                  const Text(
+                    "1",
+                    style: TextStyle(
+                      fontSize: 16,
+                      fontWeight: FontWeight.w600,
+                    ),
                   ),
-                ),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      "$name kullanıcısını tekrar eklemek istediğinize emin misiniz?",
-                      style: const TextStyle(
-                        fontSize: 16,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 12),
-                    Row(
-                      children: [
-                        _buildCoinIcon(size: 20),
-                        const SizedBox(width: 6),
-                        const Text(
-                          "1",
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w600,
-                          ),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
+                ],
               ),
               const SizedBox(height: 24),
               Row(
@@ -577,7 +561,7 @@ class _ProfileScreenState extends State<ProfileScreen> {
                         Navigator.pop(context);
                       },
                       style: ElevatedButton.styleFrom(
-                        backgroundColor: currentCategoryColor[900],
+                        backgroundColor: widget.selectedColor[900],
                         foregroundColor: Colors.white,
                         padding: const EdgeInsets.symmetric(vertical: 16),
                         shape: RoundedRectangleBorder(

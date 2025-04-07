@@ -788,10 +788,10 @@ class _SettingsScreenState extends State<SettingsScreen> {
         child: Container(
           padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
           decoration: BoxDecoration(
-            color: Colors.grey[400],
+            color: Colors.white,
             borderRadius: BorderRadius.circular(12),
             border: Border.all(
-              color: Colors.grey[500]!,
+              color: Colors.grey[400]!,
               width: 1,
             ),
             boxShadow: [
