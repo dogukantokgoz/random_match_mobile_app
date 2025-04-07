@@ -35,6 +35,11 @@ class _ProfileScreenState extends State<ProfileScreen> {
       {'name': 'John Doe', 'status': 'Online', 'level': 5, 'likes': 128, 'bio': 'Hey there! I\'m using Random Match'},
       {'name': 'Jane Smith', 'status': 'Offline', 'level': 3, 'likes': 64, 'bio': 'Life is beautiful'},
       {'name': 'Mike Johnson', 'status': 'Offline', 'level': 7, 'likes': 256, 'bio': 'Music lover 🎵'},
+      {'name': 'Sophie Chen', 'status': 'Online', 'level': 6, 'likes': 189, 'bio': 'Photography enthusiast 📸'},
+      {'name': 'Alex Turner', 'status': 'Online', 'level': 8, 'likes': 342, 'bio': 'Guitar player 🎸'},
+      {'name': 'Maria Garcia', 'status': 'Offline', 'level': 4, 'likes': 112, 'bio': 'Coffee addict ☕'},
+      {'name': 'Lucas Kim', 'status': 'Online', 'level': 7, 'likes': 276, 'bio': 'Tech geek 💻'},
+      {'name': 'Isabella Silva', 'status': 'Online', 'level': 5, 'likes': 167, 'bio': 'Dance lover 💃'},
     ]},
     'İstekler': {'color': Colors.green, 'icon': Icons.person_add, 'items': [
       {'name': 'Alice Brown', 'status': 'Online', 'level': 4, 'likes': 96, 'bio': 'Adventure seeker'},
