@@ -14,6 +14,7 @@ import '../components/outgoing_call_widget.dart';
 import 'match_request_screen.dart';
 import 'premium_screen.dart';
 import '../components/profile_card.dart';
+import 'login_screen.dart';
 
 class CallScreen extends StatefulWidget {
   final int currentGold;
@@ -914,6 +915,42 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                           ),
                         ),
                       ],
+                    ),
+                  ),
+                  // Test Buttons
+                  Positioned(
+                    bottom: 80,
+                    left: 16,
+                    child: Material(
+                      color: Colors.transparent,
+                      child: InkWell(
+                        borderRadius: BorderRadius.circular(15),
+                        onTap: () {
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => LoginScreen()),
+                          );
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                          decoration: BoxDecoration(
+                            color: Colors.white.withOpacity(0.15),
+                            borderRadius: BorderRadius.circular(15),
+                            border: Border.all(
+                              color: Colors.white.withOpacity(0.2),
+                              width: 1,
+                            ),
+                          ),
+                          child: const Text(
+                            'Test Login',
+                            style: TextStyle(
+                              color: Colors.white,
+                              fontSize: 12,
+                              fontWeight: FontWeight.w500,
+                            ),
+                          ),
+                        ),
+                      ),
                     ),
                   ),
                 ],
