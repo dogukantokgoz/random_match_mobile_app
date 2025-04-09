@@ -470,9 +470,9 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                       alignment: Alignment.center,
                                       child: Text(
                                         '40',
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                      style: TextStyle(
+                                        color: Colors.white,
+                                        fontWeight: FontWeight.bold,
                                         ),
                                       ),
                                     ),
@@ -487,9 +487,9 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                         _buildTopButton(
                           child: Padding(
                             padding: EdgeInsets.symmetric(horizontal: 12),
-                            child: Row(
+                          child: Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
+                            children: [
                                 Row(
                                   children: [
                                     Icon(
@@ -524,8 +524,8 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
                                       ),
                                     ),
                                   ],
-                                ),
-                              ],
+                              ),
+                            ],
                             ),
                           ),
                         ),

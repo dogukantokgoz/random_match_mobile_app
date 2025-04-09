@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'reset_password_screen.dart';
+import '../widgets/animated_gradient.dart';
 
 class ForgotPasswordScreen extends StatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -14,17 +15,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF151515),
-              Color(0xFF111111),
-            ],
-          ),
-        ),
+      body: AnimatedGradient(
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(24.0),

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'register_screen.dart';
 import 'call_screen.dart';
 import 'forgot_password_screen.dart';
+import '../widgets/animated_gradient.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -40,17 +41,7 @@ class _LoginScreenState extends State<LoginScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF151515),
-              Color(0xFF111111),
-            ],
-          ),
-        ),
+      body: AnimatedGradient(
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(24.0),

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'call_screen.dart';
+import '../widgets/animated_gradient.dart';
 
 class RegisterScreen extends StatefulWidget {
   const RegisterScreen({super.key});
@@ -528,17 +529,7 @@ class _RegisterScreenState extends State<RegisterScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.grey[900],
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [
-              Color(0xFF151515),
-              Color(0xFF111111),
-            ],
-          ),
-        ),
+      body: AnimatedGradient(
         child: SafeArea(
           child: _showEmailForm
               ? Padding(
