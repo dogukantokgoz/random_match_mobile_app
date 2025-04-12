@@ -15,6 +15,7 @@ import 'match_request_screen.dart';
 import 'premium_screen.dart';
 import '../components/profile_card.dart';
 import 'login_screen.dart';
+import 'splash_screen.dart';
 
 class CallScreen extends StatefulWidget {
   final int currentGold;
@@ -346,6 +347,32 @@ class _CallScreenState extends State<CallScreen> with TickerProviderStateMixin {
             child: SafeArea(
               child: Stack(
                 children: [
+                  // Test button for Splash Screen
+                  Positioned(
+                    left: 20,
+                    top: 50,
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(builder: (context) => const SplashScreen()),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: Colors.white.withOpacity(0.2),
+                        padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 8),
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(20),
+                        ),
+                      ),
+                      child: const Text(
+                        'Test Splash',
+                        style: TextStyle(
+                          color: Colors.white,
+                          fontSize: 14,
+                        ),
+                      ),
+                    ),
+                  ),
                   // Categories Button (Top Left)
                   Positioned(
                     left: 16,
